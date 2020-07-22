@@ -1,13 +1,14 @@
 package ui;
 
 import player.Inventory;
+import player.Player;
 
 import java.util.Scanner;
 
 // Inchoate game
 public class Inchoate {
-    Scanner input;
-    private Inventory inventory;
+
+    private Player player;
 
     // EFFECTS: Runs the Inchoate game
     public Inchoate() {
@@ -19,8 +20,8 @@ public class Inchoate {
     private void runInchoate() {
         boolean isGameRunning = true;
         String command;
-        input = new Scanner(System.in);
-        inventory = new Inventory(5);
+        Scanner input = new Scanner(System.in);
+        player = new Player();
 
         // Game loop
         while (isGameRunning) {
@@ -41,6 +42,6 @@ public class Inchoate {
     }
 
     private void interactInventory() {
-        System.out.println(inventory.getItems());
+        System.out.println(player.getInventory().getItems());
     }
 }
