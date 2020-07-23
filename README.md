@@ -14,12 +14,10 @@ As a user, I want to be able to...
 - Inventory
     - [ ] Add/remove item(s) to/from inventory
     - [ ] View inventory
+    - [ ] Get item info
 - Map/Rooms
     - [X] Move between rooms
     - [X] Get room info
-- Items
-    - [ ] Get item info
-    - [ ] Pick/drop item
 ### Phase 2: Data Persistence
 ### Phase 3: GUI
 ### Phase 4: Design
