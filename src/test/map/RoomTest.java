@@ -2,7 +2,6 @@ package map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import player.Inventory;
 
 import java.util.ArrayList;
 
@@ -13,7 +12,7 @@ public class RoomTest {
 
     @BeforeEach
     void runBefore() {
-        room = new Room("name", "desc", -1, 0, 1, 2, new ArrayList<>());
+        room = new Room("name", "desc", -1, 0, 1, 2);
     }
     @Test
     void testGetDestinationFromDirection() {
@@ -21,5 +20,11 @@ public class RoomTest {
         assertEquals(room.getSouth(), room.getDestinationFromDirection(Direction.SOUTH));
         assertEquals(room.getWest(), room.getDestinationFromDirection(Direction.WEST));
         assertEquals(room.getEast(), room.getDestinationFromDirection(Direction.EAST));
+    }
+
+    @Test
+    void testGetNameDesc() {
+        assertEquals("name", room.getName());
+        assertEquals("desc", room.getDescription());
     }
 }

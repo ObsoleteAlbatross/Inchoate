@@ -1,6 +1,5 @@
 package ui;
 
-import item.Item;
 import map.Direction;
 import map.Room;
 import player.Player;
@@ -28,7 +27,7 @@ public class Inchoate {
     }
 
     // MODIFIES: this
-    // EFFECTS: ???
+    // EFFECTS: the game loop
     private void runInchoate() {
         boolean isGameRunning = true;
         String command;
@@ -55,10 +54,10 @@ public class Inchoate {
     }
 
     private void makeMap() {
-        player.getMap().addRoom(new Room("Bilgewater", "Welcome to Bilgewater", 1, -1, -1, -1, new ArrayList<>()));
-        player.getMap().addRoom(new Room("Ionia", "Welcome to Ionia", -1, 2, 0, -1, new ArrayList<>()));
-        player.getMap().addRoom(new Room("Demacia", "Welcome to Demacia", -1, 3, -1, 1, new ArrayList<>()));
-        player.getMap().addRoom(new Room("Noxus", "Welcome to Noxus", -1, -1, -1, 2, new ArrayList<>()));
+        player.getMap().addRoom(new Room("Bilgewater", "Welcome to Bilgewater", 1, -1, -1, -1));
+        player.getMap().addRoom(new Room("Ionia", "Welcome to Ionia", -1, 2, 0, -1));
+        player.getMap().addRoom(new Room("Demacia", "Welcome to Demacia", -1, 3, -1, 1));
+        player.getMap().addRoom(new Room("Noxus", "Welcome to Noxus", -1, -1, -1, 2));
     }
 
     private void setupCommands() {
@@ -73,8 +72,6 @@ public class Inchoate {
         if (command.equals("quit")) {
             System.out.println("Quitting game...");
             return false;
-        } else if (command.equals("inventory")) {
-            interactInventory();
         } else if (moveCommands.contains(command)) {
             if (!movePlayer(command)) {
                 throw new IllegalArgumentException("You can't go that way!");
@@ -85,6 +82,8 @@ public class Inchoate {
         return true;
     }
 
+    // Modifies: this, Player
+    // Effects: move the player to a room in given direction if possible
     private boolean movePlayer(String dir) {
         int direction = dir.equals("north") ? Direction.NORTH : dir.equals("south") ? Direction.SOUTH :
                 dir.equals("west") ? Direction.WEST : Direction.EAST;
@@ -95,9 +94,5 @@ public class Inchoate {
         primaryText = player.getMap().getCurrentRoom().getName();
         secondaryText = player.getMap().getCurrentRoom().getDescription();
         return true;
-    }
-
-    private void interactInventory() {
-        System.out.println(player.getInventory().getItems());
     }
 }
