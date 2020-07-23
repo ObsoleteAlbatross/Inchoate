@@ -85,8 +85,7 @@ public class Inchoate {
     // Modifies: this, Player
     // Effects: move the player to a room in given direction if possible
     private boolean movePlayer(String dir) {
-        int direction = dir.equals("north") ? Direction.NORTH : dir.equals("south") ? Direction.SOUTH :
-                dir.equals("west") ? Direction.WEST : Direction.EAST;
+        int direction = Direction.stringToInt(dir);
         if (!player.checkMove(direction)) {
             return false;
         }
