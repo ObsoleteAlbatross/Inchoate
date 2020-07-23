@@ -2,11 +2,13 @@ package player;
 
 import map.Map;
 
+import java.util.ArrayList;
+
 public class Player {
     private Map map;
 
     public Player() {
-        this.map = new Map();
+        this.map = new Map(new ArrayList<>());
     }
 
     public void move(int direction) {

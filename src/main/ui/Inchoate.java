@@ -2,6 +2,7 @@ package ui;
 
 import map.Direction;
 import map.Room;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import player.Player;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class Inchoate {
 
     // EFFECTS: Runs the Inchoate game
     public Inchoate() {
+        player = new Player();
         primaryText = "Welcome to Inchoate!";
         secondaryText = "You find yourself in a plains opening...";
         makeMap();
@@ -32,7 +34,6 @@ public class Inchoate {
         boolean isGameRunning = true;
         String command;
         Scanner input = new Scanner(System.in);
-        player = new Player();
         while (isGameRunning) {
             System.out.println(primaryText);
             if (!player.getMap().getCurrentRoom().isVisited()) {
@@ -76,10 +77,18 @@ public class Inchoate {
             if (!movePlayer(command)) {
                 throw new IllegalArgumentException("You can't go that way!");
             }
+        } else if (command.equals("here")) {
+            getInfoCurrentRoom();
         } else {
             throw new IllegalArgumentException("Invalid command!");
         }
         return true;
+    }
+
+    private void getInfoCurrentRoom() {
+        primaryText = player.getMap().getCurrentRoom().getName();
+        secondaryText = player.getMap().getCurrentRoom().getDescription();
+        player.getMap().getCurrentRoom().setVisited(false);
     }
 
     // Modifies: this, Player

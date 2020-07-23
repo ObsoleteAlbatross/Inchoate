@@ -12,16 +12,14 @@ As a user, I want to be able to...
 
 ### Phase 1: Basic Model and Interaction
 - Inventory
-    - Add items to inventory
-    - Remove items from inventory
-    - View inventory
-- Rooms
-    - Move between rooms
-    - List exits
-    - View room description
+    - [ ] Add/remove item(s) to/from inventory
+    - [ ] View inventory
+- Map/Rooms
+    - [X] Move between rooms
+    - [X] Get room info
 - Items
-    - View item description
-    - Use items
+    - [ ] Get item info
+    - [ ] Pick/drop item
 ### Phase 2: Data Persistence
 ### Phase 3: GUI
 ### Phase 4: Design
