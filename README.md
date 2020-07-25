@@ -22,8 +22,8 @@ As a user, I want to be able to...
     - [X] Move between rooms
     - [X] Get room info
     - [X] See items in rooms
-    - [ ] Locked rooms (requires specific event/item)
-    - [ ] Riddles in rooms which grant access to locked rooms
+    - [X] Locked rooms (requires specific event/item)
+    - [X] Riddles in rooms which grant access to locked rooms
 ### Phase 2: Data Persistence
 ### Phase 3: GUI
 ### Phase 4: Design
