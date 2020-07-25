@@ -1,7 +1,7 @@
 package map;
 
 
-import java.util.List;
+import items.Inventory;
 
 public class Room {
     boolean isVisited;
@@ -11,9 +11,10 @@ public class Room {
     private int west;
     private int south;
     private int east;
+    private Inventory inventory;
 
     // Effects: New room with all fields.
-    public Room(String name, String description, int north, int west, int south, int east) {
+    public Room(String name, String description, int north, int west, int south, int east, Inventory inventory) {
         this.name = name;
         this.description = description;
         this.north = north;
@@ -21,8 +22,10 @@ public class Room {
         this.south = south;
         this.east = east;
         this.isVisited = false;
+        this.inventory = inventory;
     }
 
+    // EFFECTS: return the destination in the given direction
     public int getDestinationFromDirection(int direction) {
         return direction == Direction.NORTH ? north : direction == Direction.WEST ? west :
                 direction == Direction.SOUTH ? south : east;
@@ -58,5 +61,9 @@ public class Room {
 
     public int getEast() {
         return east;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
     }
 }

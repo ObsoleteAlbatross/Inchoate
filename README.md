@@ -11,13 +11,14 @@ To reduce redundancy:
 As a user, I want to be able to...
 
 ### Phase 1: Basic Model and Interaction
-- Inventory
-    - [ ] Add/remove item(s) to/from inventory
-    - [ ] View inventory
-    - [ ] Get item info
+- Inventory/Items
+    - [X] Add/remove item(s) to/from inventory
+    - [X] View inventory
 - Map/Rooms
     - [X] Move between rooms
     - [X] Get room info
+    - [X] See items in rooms
+    - [ ] Locked rooms (requires specific event/item)
 ### Phase 2: Data Persistence
 ### Phase 3: GUI
 ### Phase 4: Design
