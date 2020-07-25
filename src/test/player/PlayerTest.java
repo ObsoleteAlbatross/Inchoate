@@ -2,7 +2,7 @@ package player;
 
 import items.Inventory;
 import items.Item;
-import map.Direction;
+import map.Map;
 import map.Room;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,11 +29,11 @@ public class PlayerTest {
     void testMoveGood() {
         Room originalRoom = player.getMap().getCurrentRoom();
         player.getMap().getCurrentRoom().setVisited(true);
-        player.move(Direction.NORTH);
+        player.move(Map.NORTH);
         player.getMap().getCurrentRoom().setVisited(true);
         assertEquals(1, player.getMap().getCurrentIndex());
         assertNotEquals(originalRoom, player.getMap().getCurrentRoom());
-        player.move(Direction.SOUTH);
+        player.move(Map.SOUTH);
         assertTrue(player.getMap().getCurrentRoom().isVisited());
         assertEquals(0, player.getMap().getCurrentIndex());
         assertEquals(originalRoom, player.getMap().getCurrentRoom());
@@ -43,7 +43,7 @@ public class PlayerTest {
     @Test
     void testMoveGoodHiddenInventory() {
         player.getQuest().addItem(new Item("name", "desc"));
-        player.move(Direction.WEST);
+        player.move(Map.WEST);
         assertTrue(player.hasItemByName(new Item("name", "desc")));
         assertEquals(4, player.getMap().getCurrentIndex());
     }
@@ -51,7 +51,7 @@ public class PlayerTest {
     @Test
     void testMoveGoodVisibleInventory() {
         player.getInventory().addItem(new Item("name", "desc"));
-        player.move(Direction.WEST);
+        player.move(Map.WEST);
         assertTrue(player.hasItemByName(new Item("name", "desc")));
         assertEquals(4, player.getMap().getCurrentIndex());
     }
@@ -59,7 +59,7 @@ public class PlayerTest {
     @Test
     void testMoveException() {
         try {
-            player.move(Direction.WEST);
+            player.move(Map.WEST);
         } catch (Exception e) {
             assertEquals(IllegalArgumentException.class, e.getClass());
         }

@@ -33,4 +33,24 @@ public class MapTest {
         assertEquals(1, map.getCurrentIndex());
         assertEquals(room2, map.getCurrentRoom());
     }
+
+    @Test
+    void testStringToInt() {
+        assertEquals(Map.NORTH, Map.stringToInt("NORTH"));
+        assertEquals(Map.NORTH, Map.stringToInt("north"));
+        assertEquals(Map.SOUTH, Map.stringToInt("SOUTH"));
+        assertEquals(Map.SOUTH, Map.stringToInt("south"));
+        assertEquals(Map.EAST, Map.stringToInt("EAST"));
+        assertEquals(Map.EAST, Map.stringToInt("east"));
+        assertEquals(Map.WEST, Map.stringToInt("WEST"));
+        assertEquals(Map.WEST, Map.stringToInt("west"));
+    }
+
+    @Test
+    void testIntToString() {
+        assertEquals("north", Map.intToString(Map.NORTH));
+        assertEquals("south", Map .intToString(Map.SOUTH));
+        assertEquals("east", Map.intToString(Map.EAST));
+        assertEquals("west", Map .intToString(Map.WEST));
+    }
 }

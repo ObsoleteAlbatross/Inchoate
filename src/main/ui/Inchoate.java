@@ -2,7 +2,7 @@ package ui;
 
 import items.Inventory;
 import items.Item;
-import map.Direction;
+import map.Map;
 import map.Riddle;
 import map.Room;
 import player.Player;
@@ -158,7 +158,7 @@ public class Inchoate {
     // MODIFIES: this, Player
     // EFFECTS: move the player to a room in given direction if possible
     private void movePlayer(String dir) throws IllegalArgumentException {
-        player.move(Direction.stringToInt(dir));
+        player.move(Map.stringToInt(dir));
         System.out.println(player.getMap().getCurrentRoom().getName());
         if (!player.getMap().getCurrentRoom().isVisited()) {
             System.out.println(player.getMap().getCurrentRoom().getDescription());

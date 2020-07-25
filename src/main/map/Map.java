@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Map {
-    private List<Room> rooms;
+
+    public static final int NORTH = 0;
+    public static final int WEST = 1;
+    public static final int SOUTH = 2;
+    public static final int EAST = 3;
+    private final List<Room> rooms;
     private int currentIndex;
 
     public Map(List<Room> rooms) {
@@ -14,6 +19,17 @@ public class Map {
 
     public Map() {
         this.rooms = new ArrayList<>();
+    }
+
+    public static int stringToInt(String str) {
+        String s = str.toLowerCase();
+        return s.equals("north") ? NORTH : s.equals("west") ? WEST :
+                s.equals("south") ? SOUTH : EAST;
+    }
+
+    public static String intToString(int dir) {
+        return dir == NORTH ? "north" : dir == WEST ? "west" :
+                dir == SOUTH ? "south" : "east";
     }
 
     public void addRoom(Room room) {

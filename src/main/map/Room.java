@@ -60,8 +60,8 @@ public class Room {
 
     // EFFECTS: return the destination in the given direction
     public int getDestinationFromDirection(int direction) {
-        return direction == Direction.NORTH ? north : direction == Direction.WEST ? west :
-                direction == Direction.SOUTH ? south : east;
+        return direction == Map.NORTH ? north : direction == Map.WEST ? west :
+                direction == Map.SOUTH ? south : east;
     }
 
     public String getName() {
