@@ -2,6 +2,7 @@ package map;
 
 
 import items.Inventory;
+import items.Item;
 
 public class Room {
     boolean isVisited;
@@ -12,8 +13,23 @@ public class Room {
     private int south;
     private int east;
     private Inventory inventory;
+    private Item required;
 
-    // Effects: New room with all fields.
+    // EFFECTS: New room with all fields.
+    public Room(String name, String description, int north, int west, int south, int east, Inventory inventory,
+                Item required) {
+        this.name = name;
+        this.description = description;
+        this.north = north;
+        this.west = west;
+        this.south = south;
+        this.east = east;
+        this.isVisited = false;
+        this.inventory = inventory;
+        this.required = required;
+    }
+
+    // EFFECTS: No item required
     public Room(String name, String description, int north, int west, int south, int east, Inventory inventory) {
         this.name = name;
         this.description = description;
@@ -23,6 +39,7 @@ public class Room {
         this.east = east;
         this.isVisited = false;
         this.inventory = inventory;
+        this.required = new Item("none", "none");
     }
 
     // EFFECTS: return the destination in the given direction
@@ -65,5 +82,9 @@ public class Room {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    public Item getRequired() {
+        return required;
     }
 }

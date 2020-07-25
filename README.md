@@ -6,6 +6,10 @@ amorphous, never truly exiting this stage of beginnings. What more need be said?
 ## Story
 Ha, you wish!
 
+## Disclaimer?
+Place names from League of Legends was used because I am not creative. Please don't sue me.
+I also included some items which have references to other franchises. Once again, please don't sue me.
+
 ## User Stories
 To reduce redundancy:  
 As a user, I want to be able to...
@@ -19,6 +23,7 @@ As a user, I want to be able to...
     - [X] Get room info
     - [X] See items in rooms
     - [ ] Locked rooms (requires specific event/item)
+    - [ ] Riddles in rooms which grant access to locked rooms
 ### Phase 2: Data Persistence
 ### Phase 3: GUI
 ### Phase 4: Design

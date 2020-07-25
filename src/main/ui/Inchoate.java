@@ -53,7 +53,7 @@ public class Inchoate {
     }
 
     private void makeMap() {
-        player.getMap().addRoom(new Room("Bilgewater", "Welcome to Bilgewater", 1, 4, -1, -1, new Inventory()));
+        player.getMap().addRoom(new Room("Bilgewater", "Welcome to Bilgewater", 1, 4, -1, 5, new Inventory()));
         player.getMap().addRoom(new Room("Ionia", "Welcome to Ionia", -1, 2, 0, -1, new Inventory()));
         player.getMap().addRoom(new Room("Demacia", "Welcome to Demacia", -1, 3, -1, 1, new Inventory()));
         player.getMap().addRoom(new Room("Noxus", "Welcome to Noxus", -1, -1, -1, 2, new Inventory()));
@@ -63,6 +63,7 @@ public class Inchoate {
         inv4.addItem(i1);
         inv4.addItem(i2);
         player.getMap().addRoom(new Room("Shurima", "Welcome to Shurima", -1, -1, -1, 0, inv4));
+        player.getMap().addRoom(new Room("Freljord", "Welcome to Freljord", -1, 0, -1, -1, new Inventory(), i2));
         player.getMap().getCurrentRoom().setVisited(true);
     }
 

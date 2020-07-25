@@ -36,4 +36,8 @@ public class Map {
     public Room getCurrentRoom() {
         return rooms.get(currentIndex);
     }
+
+    public Room getRoomByIndex(int index) {
+        return rooms.get(index);
+    }
 }
