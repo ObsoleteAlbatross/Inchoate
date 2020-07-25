@@ -1,5 +1,6 @@
 package map;
 
+import items.Item;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import items.Inventory;
@@ -30,5 +31,23 @@ public class RoomTest {
     @Test
     void testGetInventory() {
         assertEquals(0, room.getInventory().getItems().size());
+    }
+
+    @Test
+    void testLockedRoom() {
+       Item item = new Item("name", "desc");
+       Room lockedRoom = new Room("name", "desc", -1, -1, -1, -1, new Inventory(),
+       item);
+
+       assertEquals(item, lockedRoom.getRequired());
+    }
+
+
+    @Test
+    void testRiddle() {
+        Riddle riddle = new Riddle("question", "answer", new Item("name", "desc"));
+        Room riddleRoom = new Room("name", "desc", -1, -1, -1, -1, new Inventory(), riddle);
+
+        assertEquals(riddle, riddleRoom.getRiddle());
     }
 }

@@ -3,6 +3,7 @@ package ui;
 import items.Inventory;
 import items.Item;
 import map.Direction;
+import map.Riddle;
 import map.Room;
 import player.Player;
 
@@ -13,8 +14,8 @@ import java.util.Scanner;
 // Inchoate game
 public class Inchoate {
 
-    List<String> moveCommands;
     private final Player player;
+    List<String> moveCommands;
     private String primaryText;
     private String secondaryText;
 
@@ -45,25 +46,33 @@ public class Inchoate {
                     validCommand = false;
                 }
             }
+            if (isGameRunning) {
+                isGameRunning = winCondition();
+            }
         }
     }
 
     private void welcomeText() {
         System.out.println("Welcome to Inchoate...");
+        System.out.println("You find yourself in Bilgewater. "
+                + "You must go save the princess from the evil clutches of the Noxian empire!");
     }
 
     private void makeMap() {
-        player.getMap().addRoom(new Room("Bilgewater", "Welcome to Bilgewater", 1, 4, -1, 5, new Inventory()));
-        player.getMap().addRoom(new Room("Ionia", "Welcome to Ionia", -1, 2, 0, -1, new Inventory()));
-        player.getMap().addRoom(new Room("Demacia", "Welcome to Demacia", -1, 3, -1, 1, new Inventory()));
-        player.getMap().addRoom(new Room("Noxus", "Welcome to Noxus", -1, -1, -1, 2, new Inventory()));
+        player.getMap().addRoom(new Room("Bilgewater", "Bilgewater is a port city", 1, 4, 6, 5, new Inventory()));
+        player.getMap().addRoom(new Room("Ionia", "Ionia.... uuhhhh Master Yi", -1, 2, 0, -1, new Inventory()));
+        player.getMap().addRoom(new Room("Demacia", "DEMACIAAAAAAAAA!!!!!!!!!!", -1, 3, -1, 1, new Inventory()));
+        player.getMap().addRoom(new Room("Noxus", "Kitty Kat Katarina :3", -1, -1, -1, 2, new Inventory(),
+                new Item("Vestaya", "Vestaya")));
         Item i1 = new Item("Key to Yennefer's Room", "A common item");
         Item i2 = new Item("Mushroom", "A mushroom found in Mario games");
         Inventory inv4 = new Inventory();
         inv4.addItem(i1);
         inv4.addItem(i2);
-        player.getMap().addRoom(new Room("Shurima", "Welcome to Shurima", -1, -1, -1, 0, inv4));
-        player.getMap().addRoom(new Room("Freljord", "Welcome to Freljord", -1, 0, -1, -1, new Inventory(), i2));
+        player.getMap().addRoom(new Room("Shurima", "The sands are endless here", -1, -1, -1, 0, inv4));
+        player.getMap().addRoom(new Room("Freljord", "As cold as 'her' heart :C", -1, 0, -1, -1, new Inventory(), i2));
+        player.getMap().addRoom(new Room("Vestaya Tribe", "Xayah and Rakan uwu", 0, -1, -1, -1, new Inventory(),
+                new Riddle("What's red and looks like penguins?", "red penguin", new Item("Vestaya", "Vestaya"))));
         player.getMap().getCurrentRoom().setVisited(true);
     }
 
@@ -91,10 +100,30 @@ public class Inchoate {
             drop(command[1]);
         } else if (command[0].equals("inventory")) {
             viewInventory();
+        } else if (command[0].equals("riddle")) {
+            riddle();
         } else {
             throw new IllegalArgumentException("Invalid command!");
         }
         return true;
+    }
+
+    // EFFECTS: Shows the riddle question if it exists
+    private void riddle() throws IllegalArgumentException {
+        if (player.getMap().getCurrentRoom().getRiddle() == null) {
+            throw new IllegalArgumentException("There is no riddle in this room");
+        }
+        System.out.println(player.getMap().getCurrentRoom().getRiddle().getQuestion());
+        Scanner input = new Scanner(System.in);
+        String answer = input.nextLine().toLowerCase();
+        answerRiddle(answer);
+    }
+
+    // MODIFIES: Player, Riddle
+    // EFFECTS: Answer riddle, if correct, then add the item to player hidden inventory
+    private void answerRiddle(String answer) throws IllegalArgumentException {
+        player.getMap().getCurrentRoom().getRiddle().answerQuestion(answer);
+        player.getQuest().addItem(player.getMap().getCurrentRoom().getRiddle().getItem());
     }
 
     // EFFECTS: print items in player inventory
@@ -140,5 +169,16 @@ public class Inchoate {
     // EFFECTS: list any items in current room
     private void search() {
         System.out.println(player.getMap().getCurrentRoom().getInventory().getItems());
+    }
+
+    // EFFECTS: Check if player has win game, return false if yes, true otherwise
+    //          and print some good stuff to let player know its over
+    private boolean winCondition() {
+        if (player.getMap().getCurrentRoom().getName().equals("Noxus")) {
+            System.out.println("Congratulations you have saved the princess or something");
+            System.out.println("The game is now over lol");
+            return false;
+        }
+        return true;
     }
 }

@@ -6,16 +6,17 @@ import items.Item;
 
 public class Room {
     boolean isVisited;
-    private String name;
-    private String description;
-    private int north;
-    private int west;
-    private int south;
-    private int east;
-    private Inventory inventory;
-    private Item required;
+    private final String name;
+    private final String description;
+    private final int north;
+    private final int west;
+    private final int south;
+    private final int east;
+    private final Inventory inventory;
+    private final Item required;
+    private Riddle riddle;
 
-    // EFFECTS: New room with all fields.
+    // EFFECTS: Locked room
     public Room(String name, String description, int north, int west, int south, int east, Inventory inventory,
                 Item required) {
         this.name = name;
@@ -29,7 +30,22 @@ public class Room {
         this.required = required;
     }
 
-    // EFFECTS: No item required
+    // EFFECTS: Riddle room
+    public Room(String name, String description, int north, int west, int south, int east, Inventory inventory,
+                Riddle riddle) {
+        this.name = name;
+        this.description = description;
+        this.north = north;
+        this.west = west;
+        this.south = south;
+        this.east = east;
+        this.isVisited = false;
+        this.inventory = inventory;
+        this.required = new Item("none", "none");
+        this.riddle = riddle;
+    }
+
+    // EFFECTS: No frills room :)
     public Room(String name, String description, int north, int west, int south, int east, Inventory inventory) {
         this.name = name;
         this.description = description;
@@ -56,12 +72,12 @@ public class Room {
         return description;
     }
 
-    public void setVisited(boolean visited) {
-        isVisited = visited;
-    }
-
     public boolean isVisited() {
         return isVisited;
+    }
+
+    public void setVisited(boolean visited) {
+        isVisited = visited;
     }
 
     public int getNorth() {
@@ -86,5 +102,9 @@ public class Room {
 
     public Item getRequired() {
         return required;
+    }
+
+    public Riddle getRiddle() {
+        return riddle;
     }
 }

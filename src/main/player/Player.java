@@ -28,18 +28,17 @@ public class Player {
             throw new IllegalArgumentException("You can't go there! There's nothing there!");
         }
         if (!hasItemByName(map.getRoomByIndex(destination).getRequired())) {
-            throw new IllegalArgumentException("That area is locked! You require "
-                    + map.getRoomByIndex(destination).getRequired().getName());
+            throw new IllegalArgumentException("That area is locked! You require `"
+                    + map.getRoomByIndex(destination).getRequired().getName() + "`");
         }
         map.setCurrentIndex(destination);
     }
 
-    private boolean hasItemByName(Item item) {
-        for (Item i : quest.getItems()) {
-            if (i.getName().equals(item.getName())) {
-                return true;
-            }
-        }
+    public boolean hasItemByName(Item item) {
+        return hasItemLoop(item, quest) || hasItemLoop(item, inventory);
+    }
+
+    private boolean hasItemLoop(Item item, Inventory inventory) {
         for (Item i : inventory.getItems()) {
             if (i.getName().equals(item.getName())) {
                 return true;
