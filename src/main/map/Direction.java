@@ -11,4 +11,9 @@ public class Direction {
         return s.equals("north") ? NORTH : s.equals("west") ? WEST :
                 s.equals("south") ? SOUTH : EAST;
     }
+
+    public static String intToString(int dir) {
+        return dir == NORTH ? "north" : dir == WEST ? "west" :
+                dir == SOUTH ? "south" : "east";
+    }
 }

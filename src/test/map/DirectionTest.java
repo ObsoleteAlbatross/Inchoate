@@ -16,4 +16,12 @@ public class DirectionTest {
         assertEquals(Direction.WEST, Direction.stringToInt("WEST"));
         assertEquals(Direction.WEST, Direction.stringToInt("west"));
     }
+
+    @Test
+    void testIntToString() {
+        assertEquals("north", Direction.intToString(Direction.NORTH));
+        assertEquals("south", Direction.intToString(Direction.SOUTH));
+        assertEquals("east", Direction.intToString(Direction.EAST));
+        assertEquals("west", Direction.intToString(Direction.WEST));
+    }
 }
