@@ -6,16 +6,18 @@ import map.Map;
 
 import java.util.ArrayList;
 
+// Player class, has the map, an inventory, and hidden quest inventory for progression
 public class Player {
     private final Map map;
     private final Inventory inventory;
     private final Inventory quest;
 
-    // EFFECTS: Make a new player
+    // EFFECTS: Make a new player with empty map, inv, quest
     public Player() {
         this.map = new Map(new ArrayList<>());
         this.inventory = new Inventory();
         this.quest = new Inventory();
+        // This is a default item that all rooms will check for
         this.quest.addItem(new Item("none", "none"));
     }
 
@@ -34,10 +36,12 @@ public class Player {
         map.setCurrentIndex(destination);
     }
 
+    // EFFECTS: Return if player has the given item in either quest or inventory
     public boolean hasItemByName(Item item) {
         return hasItemLoop(item, quest) || hasItemLoop(item, inventory);
     }
 
+    // EFFECTS: Return if a given item is in a given inventory
     private boolean hasItemLoop(Item item, Inventory inventory) {
         for (Item i : inventory.getItems()) {
             if (i.getName().equals(item.getName())) {
@@ -47,15 +51,17 @@ public class Player {
         return false;
     }
 
-    // Getters and setters
+    // EFFECTS: Return the map
     public Map getMap() {
         return map;
     }
 
+    // EFFECTS: Return the player inventory
     public Inventory getInventory() {
         return inventory;
     }
 
+    // EFFECTS: Return the hidden quest inventory
     public Inventory getQuest() {
         return quest;
     }

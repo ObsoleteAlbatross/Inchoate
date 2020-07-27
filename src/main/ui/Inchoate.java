@@ -16,8 +16,6 @@ public class Inchoate {
 
     private final Player player;
     List<String> moveCommands;
-    private String primaryText;
-    private String secondaryText;
 
     // EFFECTS: Performs some setup and runs the Inchoate game
     public Inchoate() {
@@ -52,12 +50,15 @@ public class Inchoate {
         }
     }
 
+    // EFFECTS: Print some welcome text
     private void welcomeText() {
         System.out.println("Welcome to Inchoate...");
         System.out.println("You find yourself in Bilgewater. "
                 + "You must go save the princess from the evil clutches of the Noxian empire!");
     }
 
+    // MODIFIES: Player
+    // EFFECTS: Make the map
     private void makeMap() {
         player.getMap().addRoom(new Room("Bilgewater", "Bilgewater is a port city", 1, 4, 6, 5, new Inventory()));
         player.getMap().addRoom(new Room("Ionia", "Ionia.... uuhhhh Master Yi", -1, 2, 0, -1, new Inventory()));
@@ -76,6 +77,7 @@ public class Inchoate {
         player.getMap().getCurrentRoom().setVisited(true);
     }
 
+    // EFFECTS: Setup some commands which can take up extra space
     private void setupCommands() {
         moveCommands = new ArrayList<>();
         moveCommands.add("north");
@@ -84,6 +86,7 @@ public class Inchoate {
         moveCommands.add("west");
     }
 
+    // EFFECTS: Parse the command
     private boolean processCommand(String[] command) throws IllegalArgumentException {
         if (command[0].equals("quit")) {
             System.out.println("Quitting game...");
@@ -124,6 +127,8 @@ public class Inchoate {
     private void answerRiddle(String answer) throws IllegalArgumentException {
         player.getMap().getCurrentRoom().getRiddle().answerQuestion(answer);
         player.getQuest().addItem(player.getMap().getCurrentRoom().getRiddle().getItem());
+        System.out.println("That is the correct answer!");
+        System.out.println("You here a door unlock in a distant area...");
     }
 
     // EFFECTS: print items in player inventory

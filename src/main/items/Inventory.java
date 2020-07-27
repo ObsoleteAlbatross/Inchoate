@@ -1,12 +1,11 @@
 package items;
 
-import items.Item;
-
 import java.util.LinkedList;
 import java.util.List;
 
+// Inventory class, holds a list of items (a container for items)
 public class Inventory {
-    private List<Item> items;
+    private final List<Item> items;
 
     public Inventory() {
         items = new LinkedList<>();
@@ -23,12 +22,13 @@ public class Inventory {
     }
 
     // MODIFIES: this
-    // EFFECTS: Add given item(s) to inventory items list
+    // EFFECTS: Add given item to inventory items list
     public void addItem(Item item) {
         items.add(item);
     }
 
-    // As above but for multiple items
+    // Overloaded method of above for multiple items
+    // EFFECTS: Add multiple given items to inventory items list
     public void addItem(List<Item> items) {
         this.items.addAll(items);
     }
@@ -45,7 +45,7 @@ public class Inventory {
         throw new IllegalArgumentException("Can't remove Item. `" + name + "` isn't here");
     }
 
-    // Getters and setters
+    // EFFECTS: Return the list of items in inventory
     public List<Item> getItems() {
         return items;
     }

@@ -4,6 +4,9 @@ package map;
 import items.Inventory;
 import items.Item;
 
+// Room class, stores name, description, destination rooms in cardinal direction.
+// Can have a Riddle (riddle room), a required item for entry (locked room), and can store items for player to pick up
+
 public class Room {
     boolean isVisited;
     private final String name;
@@ -16,7 +19,7 @@ public class Room {
     private final Item required;
     private Riddle riddle;
 
-    // EFFECTS: Locked room
+    // EFFECTS: A locked room, required a certain item to be present for passage
     public Room(String name, String description, int north, int west, int south, int east, Inventory inventory,
                 Item required) {
         this.name = name;
@@ -30,7 +33,7 @@ public class Room {
         this.required = required;
     }
 
-    // EFFECTS: Riddle room
+    // EFFECTS: Riddle room, answering this riddle, a player gets a hidden item which allows access to locked rooms
     public Room(String name, String description, int north, int west, int south, int east, Inventory inventory,
                 Riddle riddle) {
         this.name = name;
@@ -45,7 +48,7 @@ public class Room {
         this.riddle = riddle;
     }
 
-    // EFFECTS: No frills room :)
+    // EFFECTS: No frills room :) A basic room that can have some items (or treasure if you really want that)
     public Room(String name, String description, int north, int west, int south, int east, Inventory inventory) {
         this.name = name;
         this.description = description;
@@ -58,52 +61,63 @@ public class Room {
         this.required = new Item("none", "none");
     }
 
-    // EFFECTS: return the destination in the given direction
+    // EFFECTS: Return the destination in the given direction
     public int getDestinationFromDirection(int direction) {
         return direction == Map.NORTH ? north : direction == Map.WEST ? west :
                 direction == Map.SOUTH ? south : east;
     }
 
+    // EFFECTS: Return the room name
     public String getName() {
         return name;
     }
 
+    // EFFECTS: Return the room description
     public String getDescription() {
         return description;
     }
 
+    // EFFECTS: Return whether the room has already been visited
     public boolean isVisited() {
         return isVisited;
     }
 
+    // EFFECTS: Set whether room has been visited or not to given bool
     public void setVisited(boolean visited) {
         isVisited = visited;
     }
 
+    // EFFECTS: Get the index of the room to north
     public int getNorth() {
         return north;
     }
 
+    // EFFECTS: Get the index of the room to west
     public int getWest() {
         return west;
     }
 
+    // EFFECTS: Get the index of the room to south
     public int getSouth() {
         return south;
     }
 
+    // EFFECTS: Get the index of the room to east
     public int getEast() {
         return east;
     }
 
+    // EFFECTS: Return the inventory of the room (which houses items)
     public Inventory getInventory() {
         return inventory;
     }
 
+    // EFFECTS: Return the item that is required to enter the room (locked room)
     public Item getRequired() {
         return required;
     }
 
+    // EFFECTS: Get the riddle of the room (can be null since not all rooms have riddles)
     public Riddle getRiddle() {
         return riddle;
     }
