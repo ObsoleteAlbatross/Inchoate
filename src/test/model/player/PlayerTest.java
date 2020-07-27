@@ -1,9 +1,10 @@
-package player;
+package model.player;
 
-import items.Inventory;
-import items.Item;
-import map.Map;
-import map.Room;
+import model.item.Inventory;
+import model.item.Item;
+import model.map.Map;
+import model.map.Room;
+import model.player.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

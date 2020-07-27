@@ -1,6 +1,6 @@
-package map;
+package model.map;
 
-import items.Item;
+import model.item.Item;
 
 // Riddle class, has a question and corresponding answer. Will give the player an item if cleared
 public class Riddle {

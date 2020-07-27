@@ -1,11 +1,11 @@
 package ui;
 
-import items.Inventory;
-import items.Item;
-import map.Map;
-import map.Riddle;
-import map.Room;
-import player.Player;
+import model.item.Inventory;
+import model.item.Item;
+import model.map.Map;
+import model.map.Riddle;
+import model.map.Room;
+import model.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +60,7 @@ public class Inchoate {
     // MODIFIES: Player
     // EFFECTS: Make the map
     private void makeMap() {
-        player.getMap().addRoom(new Room("Bilgewater", "Bilgewater is a port city", 1, 4, 6, 5, new Inventory()));
+        player.getMap().addRoom(new Room("Bilgewater", "Bilgewater is a port city", 1, 4, -1, 5, new Inventory()));
         player.getMap().addRoom(new Room("Ionia", "Ionia.... uuhhhh Master Yi", -1, 2, 0, -1, new Inventory()));
         player.getMap().addRoom(new Room("Demacia", "DEMACIAAAAAAAAA!!!!!!!!!!", -1, 3, -1, 1, new Inventory()));
         player.getMap().addRoom(new Room("Noxus", "Kitty Kat Katarina :3", -1, -1, -1, 2, new Inventory(),
@@ -71,8 +71,8 @@ public class Inchoate {
         inv4.addItem(i1);
         inv4.addItem(i2);
         player.getMap().addRoom(new Room("Shurima", "The sands are endless here", -1, -1, -1, 0, inv4));
-        player.getMap().addRoom(new Room("Freljord", "As cold as 'her' heart :C", -1, 0, -1, -1, new Inventory(), i2));
-        player.getMap().addRoom(new Room("Vestaya Tribe", "Xayah and Rakan uwu", 0, -1, -1, -1, new Inventory(),
+        player.getMap().addRoom(new Room("Freljord", "As cold as 'her' heart :C", -1, 0, -1, 6, new Inventory(), i2));
+        player.getMap().addRoom(new Room("Vestaya Tribe", "Xayah and Rakan uwu", 0, 5, -1, -1, new Inventory(),
                 new Riddle("What's red and looks like penguins?", "red penguin", new Item("Vestaya", "Vestaya"))));
         player.getMap().getCurrentRoom().setVisited(true);
     }

@@ -1,6 +1,7 @@
-package map;
+package model.map;
 
-import items.Item;
+import model.item.Item;
+import model.map.Riddle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

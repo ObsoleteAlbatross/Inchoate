@@ -1,8 +1,8 @@
-package player;
+package model.player;
 
-import items.Inventory;
-import items.Item;
-import map.Map;
+import model.item.Inventory;
+import model.item.Item;
+import model.map.Map;
 
 import java.util.ArrayList;
 

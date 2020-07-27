@@ -1,8 +1,10 @@
-package map;
+package model.map;
 
+import model.map.Map;
+import model.map.Room;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import items.Inventory;
+import model.item.Inventory;
 
 import static org.junit.jupiter.api.Assertions.*;
 

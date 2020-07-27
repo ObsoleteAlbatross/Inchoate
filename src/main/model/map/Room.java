@@ -1,8 +1,8 @@
-package map;
+package model.map;
 
 
-import items.Inventory;
-import items.Item;
+import model.item.Inventory;
+import model.item.Item;
 
 // Room class, stores name, description, destination rooms in cardinal direction.
 // Can have a Riddle (riddle room), a required item for entry (locked room), and can store items for player to pick up

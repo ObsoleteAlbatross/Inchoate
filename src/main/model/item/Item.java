@@ -1,4 +1,4 @@
-package items;
+package model.item;
 
 // Item class, has a name and description
 public class Item {
