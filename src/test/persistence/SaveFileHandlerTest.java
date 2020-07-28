@@ -8,10 +8,12 @@ import model.player.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ReaderTest {
+public class SaveFileHandlerTest {
     Player originalPlayer;
     Item playerItem;
     Item roomItem;
@@ -20,12 +22,15 @@ public class ReaderTest {
     Riddle roomRiddle;
     Room room1;
     Room room2;
-    String file = "./data/readTest.save";
+    String saveFile;
+    String loadFile;
 
     @BeforeEach
     void runBefore() {
-        originalPlayer = new Player();
+        saveFile = "./data/saveTest.save";
+        loadFile = "./data/loadTest.save";
 
+        originalPlayer = new Player();
         playerItem = new Item("player", "player");
         originalPlayer.getInventory().addItem(playerItem);
 
@@ -45,11 +50,46 @@ public class ReaderTest {
         originalPlayer.getMap().setCurrentIndex(1);
     }
 
+    // Testing based on TellerApp
+    @Test
+    void testWriter() {
+        try {
+            SaveFileHandler saveFileHandler = new SaveFileHandler(saveFile);
+            saveFileHandler.saveFile(originalPlayer);
+        } catch (IOException e) {
+            fail();
+        }
+
+        // Read test save file and see if nothing has changed
+        Player savePlayer = new Player();
+        try {
+            SaveFileHandler saveFileHandler = new SaveFileHandler(saveFile);
+            savePlayer = saveFileHandler.loadFile();
+        } catch (Exception e) {
+            fail();
+        }
+        assertEquals(originalPlayer.getInventory().getItems().get(0).getName(),
+                savePlayer.getInventory().getItems().get(0).getName());
+        assertEquals(originalPlayer.getMap().getCurrentIndex(),
+                savePlayer.getMap().getCurrentIndex());
+        assertEquals(originalPlayer.getMap().getRoomByIndex(0).getInventory().getItems().get(0).getName(),
+                savePlayer.getMap().getRoomByIndex(0).getInventory().getItems().get(0).getName());
+        assertEquals(originalPlayer.getMap().getRoomByIndex(0).isVisited(),
+                savePlayer.getMap().getRoomByIndex(0).isVisited());
+        assertEquals(originalPlayer.getMap().getRoomByIndex(1).isVisited(),
+                savePlayer.getMap().getRoomByIndex(1).isVisited());
+        assertEquals(originalPlayer.getMap().getCurrentRoom().getRiddle().getQuestion(),
+                savePlayer.getMap().getCurrentRoom().getRiddle().getQuestion());
+        assertEquals(originalPlayer.getMap().getCurrentRoom().getRiddle().getItem().getName(),
+                savePlayer.getMap().getCurrentRoom().getRiddle().getItem().getName());
+    }
+
     @Test
     void testLoad() {
         Player savePlayer = new Player();
         try {
-            savePlayer = Reader.loadFile(file);
+            SaveFileHandler saveFileHandler = new SaveFileHandler(loadFile);
+            savePlayer = saveFileHandler.loadFile();
         } catch (Exception e) {
             fail();
         }
@@ -72,7 +112,8 @@ public class ReaderTest {
     @Test
     void testFileNotFoundException() {
         try {
-            Player savePlayer = Reader.loadFile("MUAHAHAHAHAHA");
+            SaveFileHandler saveFileHandler = new SaveFileHandler(loadFile + "JASLDJASJD");
+            Player savePlayer = saveFileHandler.loadFile();
             fail();
         } catch (Exception e) {
             // nothing to do here, excepted result

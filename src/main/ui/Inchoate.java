@@ -6,9 +6,9 @@ import model.map.Direction;
 import model.map.Riddle;
 import model.map.Room;
 import model.player.Player;
-import persistence.Reader;
-import persistence.Writer;
+import persistence.SaveFileHandler;
 
+import javax.security.sasl.SaslException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -159,7 +159,8 @@ public class Inchoate {
         System.out.println("Choose a save file to save to [1, 2, 3]");
         String file = getSaveFile();
         try {
-            Writer.saveFile(file, player);
+            SaveFileHandler saveFileHandler = new SaveFileHandler(file);
+            saveFileHandler.saveFile(player);
         } catch (IOException e) {
             throw new IOException("Failed to save");
         }
@@ -171,7 +172,8 @@ public class Inchoate {
         System.out.println("Choose a save file to load from [1, 2, 3]");
         String file = getSaveFile();
         try {
-            player = Reader.loadFile(file);
+            SaveFileHandler saveFileHandler = new SaveFileHandler(file);
+            player = saveFileHandler.loadFile();
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("Can't load a save file that doesn't exist");
         } catch (IOException e) {
