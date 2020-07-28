@@ -62,9 +62,9 @@ public class Room {
     }
 
     // EFFECTS: Return the destination in the given direction
-    public int getDestinationFromDirection(int direction) {
-        return direction == Map.NORTH ? north : direction == Map.WEST ? west :
-                direction == Map.SOUTH ? south : east;
+    public int getDestinationFromDirection(Direction direction) {
+        return direction == Direction.NORTH ? north : direction == Direction.WEST ? west :
+                direction == Direction.SOUTH ? south : east;
     }
 
     // EFFECTS: Return the room name

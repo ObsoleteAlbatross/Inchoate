@@ -1,17 +1,15 @@
 package model.map;
 
-import model.map.Map;
-import model.map.Room;
+import model.item.Inventory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import model.item.Inventory;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MapTest {
-    private Map map;
     Room room1;
     Room room2;
+    private Map map;
 
     @BeforeEach
     void runBefore() {
@@ -29,6 +27,7 @@ public class MapTest {
         assertEquals(3, map.getRooms().size());
     }
 
+    @Test
     void testGetCurrentRoom() {
         assertEquals(room1, map.getCurrentRoom());
         map.setCurrentIndex(1);
@@ -36,16 +35,17 @@ public class MapTest {
         assertEquals(room2, map.getCurrentRoom());
     }
 
+    /*
     @Test
     void testStringToInt() {
-        assertEquals(Map.NORTH, Map.stringToInt("NORTH"));
-        assertEquals(Map.NORTH, Map.stringToInt("north"));
-        assertEquals(Map.SOUTH, Map.stringToInt("SOUTH"));
-        assertEquals(Map.SOUTH, Map.stringToInt("south"));
-        assertEquals(Map.EAST, Map.stringToInt("EAST"));
-        assertEquals(Map.EAST, Map.stringToInt("east"));
-        assertEquals(Map.WEST, Map.stringToInt("WEST"));
-        assertEquals(Map.WEST, Map.stringToInt("west"));
+        assertEquals(Direction.NORTH, Direction.stringToInt("NORTH"));
+        assertEquals(Direction.NORTH, Direction.stringToInt("north"));
+        assertEquals(Direction.SOUTH, Direction.stringToInt("SOUTH"));
+        assertEquals(Direction.SOUTH, Direction.stringToInt("south"));
+        assertEquals(Direction.EAST, Direction.stringToInt("EAST"));
+        assertEquals(Direction.EAST, Direction.stringToInt("east"));
+        assertEquals(Direction.WEST, Direction.stringToInt("WEST"));
+        assertEquals(Direction.WEST, Direction.stringToInt("west"));
     }
 
     @Test
@@ -55,4 +55,5 @@ public class MapTest {
         assertEquals("east", Map.intToString(Map.EAST));
         assertEquals("west", Map .intToString(Map.WEST));
     }
+     */
 }

@@ -2,6 +2,7 @@ package ui;
 
 import model.item.Inventory;
 import model.item.Item;
+import model.map.Direction;
 import model.map.Map;
 import model.map.Riddle;
 import model.map.Room;
@@ -163,7 +164,20 @@ public class Inchoate {
     // MODIFIES: this, Player
     // EFFECTS: move the player to a room in given direction if possible
     private void movePlayer(String dir) throws IllegalArgumentException {
-        player.move(Map.stringToInt(dir));
+        switch (dir) {
+            case "north":
+                player.move(Direction.NORTH);
+                break;
+            case "south":
+                player.move(Direction.SOUTH);
+                break;
+            case "west":
+                player.move(Direction.WEST);
+                break;
+            case "east":
+                player.move(Direction.EAST);
+                break;
+        }
         System.out.println(player.getMap().getCurrentRoom().getName());
         if (!player.getMap().getCurrentRoom().isVisited()) {
             System.out.println(player.getMap().getCurrentRoom().getDescription());

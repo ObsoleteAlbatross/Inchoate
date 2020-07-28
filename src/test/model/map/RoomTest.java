@@ -19,10 +19,10 @@ public class RoomTest {
     }
     @Test
     void testGetDestinationFromDirection() {
-        assertEquals(room.getNorth(), room.getDestinationFromDirection(Map.NORTH));
-        assertEquals(room.getSouth(), room.getDestinationFromDirection(Map.SOUTH));
-        assertEquals(room.getWest(), room.getDestinationFromDirection(Map.WEST));
-        assertEquals(room.getEast(), room.getDestinationFromDirection(Map.EAST));
+        assertEquals(room.getNorth(), room.getDestinationFromDirection(Direction.NORTH));
+        assertEquals(room.getSouth(), room.getDestinationFromDirection(Direction.SOUTH));
+        assertEquals(room.getWest(), room.getDestinationFromDirection(Direction.WEST));
+        assertEquals(room.getEast(), room.getDestinationFromDirection(Direction.EAST));
     }
 
     @Test

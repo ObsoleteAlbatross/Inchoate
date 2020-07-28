@@ -2,6 +2,7 @@ package model.player;
 
 import model.item.Inventory;
 import model.item.Item;
+import model.map.Direction;
 import model.map.Map;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class Player {
 
     // MODIFIES: this
     // EFFECTS: Try to move player in given direction, throw exception accordingly if can't
-    public void move(int direction) throws IllegalArgumentException {
+    public void move(Direction direction) throws IllegalArgumentException {
         int destination = map.getCurrentRoom().getDestinationFromDirection(direction);
         // Check if direction is valid
         if (map.getCurrentRoom().getDestinationFromDirection(direction) == -1) {
