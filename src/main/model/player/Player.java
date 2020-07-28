@@ -5,10 +5,11 @@ import model.item.Item;
 import model.map.Direction;
 import model.map.Map;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 // Player class, has the map, an inventory, and hidden quest inventory for progression
-public class Player {
+public class Player implements Serializable {
     private final Map map;
     private final Inventory inventory;
     private final Inventory quest;

@@ -31,5 +31,9 @@ As a user, I want to be able to...
     - [X] Locked rooms (requires specific event/item)
     - [X] Riddles in rooms which grant access to locked rooms
 ### Phase 2: Data Persistence
+- [ ] Save game to a save file
+- [ ] Load game from a save file
+- [ ] Option to start new game or load game on startup
+- [ ] Option to save game on quit
 ### Phase 3: GUI
 ### Phase 4: Design

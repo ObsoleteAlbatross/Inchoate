@@ -1,10 +1,11 @@
 package model.item;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
 // Inventory class, holds a list of items (a container for items)
-public class Inventory {
+public class Inventory implements Serializable {
     private final List<Item> items;
 
     public Inventory() {

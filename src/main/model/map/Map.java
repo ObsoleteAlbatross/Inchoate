@@ -1,10 +1,11 @@
 package model.map;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 // Map class, a container for all the rooms in the game
-public class Map {
+public class Map implements Serializable  {
 
     private final List<Room> rooms;
     private int currentIndex;

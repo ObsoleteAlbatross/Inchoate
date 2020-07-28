@@ -4,10 +4,12 @@ package model.map;
 import model.item.Inventory;
 import model.item.Item;
 
+import java.io.Serializable;
+
 // Room class, stores name, description, destination rooms in cardinal direction.
 // Can have a Riddle (riddle room), a required item for entry (locked room), and can store items for player to pick up
 
-public class Room {
+public class Room implements Serializable {
     boolean isVisited;
     private final String name;
     private final String description;

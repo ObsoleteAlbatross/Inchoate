@@ -2,8 +2,10 @@ package model.map;
 
 import model.item.Item;
 
+import java.io.Serializable;
+
 // Riddle class, has a question and corresponding answer. Will give the player an item if cleared
-public class Riddle {
+public class Riddle implements Serializable {
     private final String question;
     private final String answer;
     private boolean isAnswered;

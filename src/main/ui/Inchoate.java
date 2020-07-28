@@ -3,11 +3,11 @@ package ui;
 import model.item.Inventory;
 import model.item.Item;
 import model.map.Direction;
-import model.map.Map;
 import model.map.Riddle;
 import model.map.Room;
 import model.player.Player;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,7 +15,7 @@ import java.util.Scanner;
 // Inchoate game
 public class Inchoate {
 
-    private final Player player;
+    private Player player;
     List<String> moveCommands;
 
     // EFFECTS: Performs some setup and runs the Inchoate game
@@ -106,10 +106,40 @@ public class Inchoate {
             viewInventory();
         } else if (command[0].equals("riddle")) {
             riddle();
+        } else if (command[0].equals("save")) {
+            save();
+        } else if (command[0].equals("load")) {
+            load();
         } else {
             throw new IllegalArgumentException("Invalid command!");
         }
         return true;
+    }
+
+
+    private void save() {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream("./data/test.save");
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+            objectOutputStream.writeObject(player);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void load() {
+        try {
+            FileInputStream fileInputStream = new FileInputStream("./data/test.save");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+            player = (Player) objectInputStream.readObject();
+            objectInputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // EFFECTS: Shows the riddle question if it exists

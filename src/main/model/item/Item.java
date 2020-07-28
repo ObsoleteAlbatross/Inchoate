@@ -1,7 +1,9 @@
 package model.item;
 
+import java.io.Serializable;
+
 // Item class, has a name and description
-public class Item {
+public class Item implements Serializable {
     String name;
     String description;
 
