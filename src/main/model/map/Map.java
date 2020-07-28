@@ -22,27 +22,6 @@ public class Map {
         currentIndex = 0;
     }
 
-    /*
-        // REQUIRES: Given string is one of: north, west, south, east
-        //           This is enforced by the UI/GUI since the commands will throw the appropriate exceptions
-        //           Hence this will only be called if the command is of valid type, which fulfills this REQUIRES
-        // EFFECTS: Return the direction (NWSE) from the given string
-        public static int stringToInt(String str) {
-            String s = str.toLowerCase();
-            return s.equals("north") ? NORTH : s.equals("west") ? WEST :
-                    s.equals("south") ? SOUTH : EAST;
-        }
-
-        // REQUIRES: Given direction is one of Map.NORTH, Map.WEST, Map.SOUTH, Map.EAST
-        //           Enforcement is similar to stringToInt(String str)
-        //           This method should only be called using the above static ints
-        // EFFECTS: Return the string representation of a given direction
-        public static String intToString(int dir) {
-            return dir == NORTH ? "north" : dir == WEST ? "west" :
-                    dir == SOUTH ? "south" : "east";
-        }
-     */
-
     // MODIFIES: this
     // EFFECTS: Add a room to the list of rooms
     public void addRoom(Room room) {
