@@ -1,9 +1,6 @@
 package model.map;
 
 import model.item.Item;
-import model.map.Map;
-import model.map.Riddle;
-import model.map.Room;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import model.item.Inventory;

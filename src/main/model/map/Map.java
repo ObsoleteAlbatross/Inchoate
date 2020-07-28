@@ -1,5 +1,7 @@
 package model.map;
 
+import model.map.Room;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

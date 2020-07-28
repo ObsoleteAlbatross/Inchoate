@@ -6,8 +6,11 @@ import model.map.Direction;
 import model.map.Riddle;
 import model.map.Room;
 import model.player.Player;
+import persistence.Reader;
+import persistence.Writer;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,22 +18,23 @@ import java.util.Scanner;
 // Inchoate game
 public class Inchoate {
 
-    private Player player;
     List<String> moveCommands;
+    boolean isGameRunning;
+    private Player player;
 
     // EFFECTS: Performs some setup and runs the Inchoate game
     public Inchoate() {
         player = new Player();
         makeMap();
         setupCommands();
-        welcomeText();
+        starting();
         runInchoate();
     }
 
     // MODIFIES: this
     // EFFECTS: the game loop
     private void runInchoate() {
-        boolean isGameRunning = true;
+        isGameRunning = true;
         while (isGameRunning) {
             boolean validCommand = false;
             while (!validCommand) {
@@ -38,9 +42,9 @@ public class Inchoate {
                 Scanner input = new Scanner(System.in);
                 command = input.nextLine().toLowerCase().split(" ", 2);
                 try {
-                    isGameRunning = processCommand(command);
+                    processCommand(command);
                     validCommand = true;
-                } catch (IllegalArgumentException e) {
+                } catch (Exception e) {
                     System.out.println(e.toString().split(": ")[1]);
                     validCommand = false;
                 }
@@ -51,9 +55,30 @@ public class Inchoate {
         }
     }
 
+
+    private void starting() {
+        System.out.println("Welcome to Inchoate...");
+        System.out.println("Would you line to start a `new` game or `load` from existing?");
+        Scanner input = new Scanner(System.in);
+        String[] command = input.nextLine().toLowerCase().split(" ", 2);
+        if (command[0].equals("new")) {
+            welcomeText();
+            return;
+        }
+        boolean validCommand = false;
+        while (!validCommand) {
+            try {
+                processCommand(command);
+                validCommand = true;
+            } catch (Exception e) {
+                System.out.println(e.toString().split(": ")[1]);
+                validCommand = false;
+            }
+        }
+    }
+
     // EFFECTS: Print some welcome text
     private void welcomeText() {
-        System.out.println("Welcome to Inchoate...");
         System.out.println("You find yourself in Bilgewater. "
                 + "You must go save the princess from the evil clutches of the Noxian empire!");
     }
@@ -88,14 +113,13 @@ public class Inchoate {
     }
 
     // EFFECTS: Parse the command
-    private boolean processCommand(String[] command) throws IllegalArgumentException {
+    private void processCommand(String[] command) throws Exception {
         if (command[0].equals("quit")) {
-            System.out.println("Quitting game...");
-            return false;
+            quit();
         } else if (moveCommands.contains(command[0])) {
             movePlayer(command[0]);
         } else if (command[0].equals("here")) {
-            getInfoCurrentRoom();
+            here();
         } else if (command[0].equals("search")) {
             search();
         } else if (command[0].equals("take")) {
@@ -113,33 +137,60 @@ public class Inchoate {
         } else {
             throw new IllegalArgumentException("Invalid command!");
         }
-        return true;
     }
 
+    // MODIFIES: this
+    // EFFECTS: quit the game
+    private void quit() throws IOException, IllegalArgumentException {
+        System.out.println("Would you like to save the game?");
+        Scanner input = new Scanner(System.in);
+        String command = input.nextLine().toLowerCase();
+        if (command.equals("yes")) {
+            save();
+        } else if (!command.equals("no")) {
+            throw new IllegalArgumentException("Please enter either `yes` or `no`");
+        }
+        System.out.println("Quitting game...");
+        isGameRunning = false;
+    }
 
-    private void save() {
+    // EFFECTS: Save file to regex: ./data/saveFile[123].save
+    private void save() throws IOException {
+        System.out.println("Choose a save file to save to [1, 2, 3]");
+        String file = getSaveFile();
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("./data/test.save");
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-
-            objectOutputStream.writeObject(player);
-            objectOutputStream.flush();
-            objectOutputStream.close();
+            Writer.saveFile(file, player);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IOException("Failed to save");
         }
+        System.out.println("Saved to slot " + file.charAt(15));
     }
 
-    private void load() {
+    // EFFECTS: Load file to regex: ./data/saveFile[123].save
+    private void load() throws IOException, ClassNotFoundException {
+        System.out.println("Choose a save file to load from [1, 2, 3]");
+        String file = getSaveFile();
         try {
-            FileInputStream fileInputStream = new FileInputStream("./data/test.save");
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-
-            player = (Player) objectInputStream.readObject();
-            objectInputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            player = Reader.loadFile(file);
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException("Can't load a save file that doesn't exist");
+        } catch (IOException e) {
+            throw new IOException("Failed to load save file");
+        } catch (ClassNotFoundException e) {
+            throw new ClassNotFoundException("Class not found exception");
         }
+        System.out.println("Loaded from slot " + file.charAt(15));
+        here();
+    }
+
+    // EFFECTS: Get the save file based on user input
+    private String getSaveFile() throws IllegalArgumentException {
+        Scanner input = new Scanner(System.in);
+        String command = input.nextLine().toLowerCase();
+        if (!command.equals("1") && !command.equals("2") && !command.equals("3")) {
+            throw new IllegalArgumentException("Please select a valid save file");
+        }
+        return "./data/saveFile" + command + ".save";
     }
 
     // EFFECTS: Shows the riddle question if it exists
@@ -186,7 +237,7 @@ public class Inchoate {
     }
 
     // EFFECTS: Print out info of current room, as if you had just visited it
-    private void getInfoCurrentRoom() {
+    private void here() {
         System.out.println(player.getMap().getCurrentRoom().getName());
         System.out.println(player.getMap().getCurrentRoom().getDescription());
     }
