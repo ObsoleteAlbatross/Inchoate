@@ -159,8 +159,7 @@ public class Inchoate {
         System.out.println("Choose a save file to save to [1, 2, 3]");
         String file = getSaveFile();
         try {
-            SaveFileHandler saveFileHandler = new SaveFileHandler(file);
-            saveFileHandler.saveFile(player);
+            SaveFileHandler.saveFile(file, player);
         } catch (IOException e) {
             throw new IOException("Failed to save");
         }
@@ -172,8 +171,7 @@ public class Inchoate {
         System.out.println("Choose a save file to load from [1, 2, 3]");
         String file = getSaveFile();
         try {
-            SaveFileHandler saveFileHandler = new SaveFileHandler(file);
-            player = saveFileHandler.loadFile();
+            SaveFileHandler.loadFile(file);
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("Can't load a save file that doesn't exist");
         } catch (IOException e) {

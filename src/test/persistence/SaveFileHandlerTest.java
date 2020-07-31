@@ -50,12 +50,32 @@ public class SaveFileHandlerTest {
         originalPlayer.getMap().setCurrentIndex(1);
     }
 
+    /*
+     * Since SaveFileHandler only contains static methods, the default constructor is not needed
+     * and therefore never tested which makes autobot unhappy.
+     * As per piazza post followup https://piazza.com/class/kc0wnmopmqo4vi?cid=448 or @448_f1,
+     * I have created this dummy test despite it technically being an "attempt to `fake` code coverage"
+     * According to Bhavesh / Vegetables:
+     *    It does. However, this is more of a special case where the code coverage runner would
+     *    penalize you for a method you do not need to call anywhere else in your code.
+     *    Therefore, it should be fine if you create a dummy test for only this.
+     *    Also, make sure to clearly leave a comment above the text explaining why it does
+     *    not have any assert statements. You can link to this post if you want as well.
+     * I pray for no penalization as this is done in good faith, but these days good faith
+     * is often not enough. Why am I rambling on inside a comment. Anyways, have a nice day
+     * whomever stumbles upon this :)
+     */
+    @Test
+    void testDummyDefaultConstructor() {
+        SaveFileHandler saveFileHandler = new SaveFileHandler();
+        assertEquals(saveFileHandler.getClass(), SaveFileHandler.class);
+    }
+
     // Testing based on TellerApp
     @Test
     void testWriter() {
         try {
-            SaveFileHandler saveFileHandler = new SaveFileHandler(saveFile);
-            saveFileHandler.saveFile(originalPlayer);
+            SaveFileHandler.saveFile(saveFile, originalPlayer);
         } catch (IOException e) {
             fail();
         }
@@ -63,8 +83,7 @@ public class SaveFileHandlerTest {
         // Read test save file and see if nothing has changed
         Player savePlayer = new Player();
         try {
-            SaveFileHandler saveFileHandler = new SaveFileHandler(saveFile);
-            savePlayer = saveFileHandler.loadFile();
+            savePlayer = SaveFileHandler.loadFile(saveFile);
         } catch (Exception e) {
             fail();
         }
@@ -88,8 +107,7 @@ public class SaveFileHandlerTest {
     void testLoad() {
         Player savePlayer = new Player();
         try {
-            SaveFileHandler saveFileHandler = new SaveFileHandler(loadFile);
-            savePlayer = saveFileHandler.loadFile();
+            savePlayer = SaveFileHandler.loadFile(loadFile);
         } catch (Exception e) {
             fail();
         }
@@ -112,8 +130,7 @@ public class SaveFileHandlerTest {
     @Test
     void testFileNotFoundException() {
         try {
-            SaveFileHandler saveFileHandler = new SaveFileHandler(loadFile + "JASLDJASJD");
-            Player savePlayer = saveFileHandler.loadFile();
+            SaveFileHandler.loadFile(loadFile + "JALSJLDKAJSD");
             fail();
         } catch (Exception e) {
             // nothing to do here, excepted result
