@@ -7,23 +7,36 @@ import map.Riddle;
 import map.Room;
 import player.Player;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+// GUI base from https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html
 // Inchoate game
 public class Inchoate {
 
     private final Player player;
     List<String> moveCommands;
+    DisplayHandler displayHandler;
 
-    // EFFECTS: Performs some setup and runs the Inchoate game
+   // EFFECTS: Performs some setup and runs the Inchoate game
     public Inchoate() {
         player = new Player();
         makeMap();
         setupCommands();
         welcomeText();
         runInchoate();
+    }
+
+    // EFFECTS: As above but intented for use with GUI
+    public Inchoate(DisplayHandler displayHandler) {
+        player = new Player();
+        makeMap();
+        setupCommands();
+        welcomeText();
+        this.displayHandler = displayHandler;
+        // runInchoate();
     }
 
     // MODIFIES: this
@@ -40,7 +53,7 @@ public class Inchoate {
                     isGameRunning = processCommand(command);
                     validCommand = true;
                 } catch (IllegalArgumentException e) {
-                    System.out.println(e.toString().split(": ")[1]);
+                    print(e.toString().split(": ")[1], Color.RED);
                     validCommand = false;
                 }
             }
@@ -52,8 +65,8 @@ public class Inchoate {
 
     // EFFECTS: Print some welcome text
     private void welcomeText() {
-        System.out.println("Welcome to Inchoate...");
-        System.out.println("You find yourself in Bilgewater. "
+        print("Welcome to Inchoate...");
+        print("You find yourself in Bilgewater. "
                 + "You must go save the princess from the evil clutches of the Noxian empire!");
     }
 
@@ -87,9 +100,9 @@ public class Inchoate {
     }
 
     // EFFECTS: Parse the command
-    private boolean processCommand(String[] command) throws IllegalArgumentException {
+    public boolean processCommand(String[] command) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (command[0].equals("quit")) {
-            System.out.println("Quitting game...");
+            print("Quitting game...");
             return false;
         } else if (moveCommands.contains(command[0])) {
             movePlayer(command[0]);
@@ -97,9 +110,9 @@ public class Inchoate {
             getInfoCurrentRoom();
         } else if (command[0].equals("search")) {
             search();
-        } else if (command[0].equals("take")) {
+        } else if (command[0].equals("take") && command.length > 1) {
             take(command[1]);
-        } else if (command[0].equals("drop")) {
+        } else if (command[0].equals("drop") && command.length > 1) {
             drop(command[1]);
         } else if (command[0].equals("inventory")) {
             viewInventory();
@@ -116,7 +129,7 @@ public class Inchoate {
         if (player.getMap().getCurrentRoom().getRiddle() == null) {
             throw new IllegalArgumentException("There is no riddle in this room");
         }
-        System.out.println(player.getMap().getCurrentRoom().getRiddle().getQuestion());
+        print(player.getMap().getCurrentRoom().getRiddle().getQuestion());
         Scanner input = new Scanner(System.in);
         String answer = input.nextLine().toLowerCase();
         answerRiddle(answer);
@@ -127,13 +140,13 @@ public class Inchoate {
     private void answerRiddle(String answer) throws IllegalArgumentException {
         player.getMap().getCurrentRoom().getRiddle().answerQuestion(answer);
         player.getQuest().addItem(player.getMap().getCurrentRoom().getRiddle().getItem());
-        System.out.println("That is the correct answer!");
-        System.out.println("You here a door unlock in a distant area...");
+        print("That is the correct answer!");
+        print("You here a door unlock in a distant area...");
     }
 
     // EFFECTS: print items in player inventory
     private void viewInventory() {
-        System.out.println(player.getInventory().getItems());
+        print(player.getInventory().getItems().toString());
     }
 
     // MODIFIES: Player
@@ -142,7 +155,7 @@ public class Inchoate {
         Item item = player.getInventory().getItem(itemName);
         player.getMap().getCurrentRoom().getInventory().addItem(item);
         player.getInventory().removeItem(itemName);
-        System.out.println("Dropped `" + itemName + "` from your inventory");
+        print("Dropped `" + itemName + "` from your inventory");
     }
 
     // MODIFIES: Player
@@ -151,39 +164,53 @@ public class Inchoate {
         Item item = player.getMap().getCurrentRoom().getInventory().getItem(itemName);
         player.getInventory().addItem(item);
         player.getMap().getCurrentRoom().getInventory().removeItem(item.getName());
-        System.out.println("Added `" + item.getName() + "` to your inventory");
+        print("Added `" + item.getName() + "` to your inventory");
     }
 
     // EFFECTS: Print out info of current room, as if you had just visited it
     private void getInfoCurrentRoom() {
-        System.out.println(player.getMap().getCurrentRoom().getName());
-        System.out.println(player.getMap().getCurrentRoom().getDescription());
+        print("Location Name: " + player.getMap().getCurrentRoom().getName());
+        print("Location Description : " + player.getMap().getCurrentRoom().getDescription());
     }
 
     // MODIFIES: this, Player
     // EFFECTS: move the player to a room in given direction if possible
     private void movePlayer(String dir) throws IllegalArgumentException {
         player.move(Map.stringToInt(dir));
-        System.out.println(player.getMap().getCurrentRoom().getName());
+        print("Location Name: " + player.getMap().getCurrentRoom().getName());
         if (!player.getMap().getCurrentRoom().isVisited()) {
-            System.out.println(player.getMap().getCurrentRoom().getDescription());
+            print("Location Description: " + player.getMap().getCurrentRoom().getDescription());
             player.getMap().getCurrentRoom().setVisited(true);
         }
     }
 
     // EFFECTS: list any items in current room
     private void search() {
-        System.out.println(player.getMap().getCurrentRoom().getInventory().getItems());
+        print(player.getMap().getCurrentRoom().getInventory().getItems().toString());
     }
 
     // EFFECTS: Check if player has win game, return false if yes, true otherwise
     //          and print some good stuff to let player know its over
     private boolean winCondition() {
         if (player.getMap().getCurrentRoom().getName().equals("Noxus")) {
-            System.out.println("Congratulations you have saved the princess or something");
-            System.out.println("The game is now over lol");
+            print("Congratulations you have saved the princess or something");
+            print("The game is now over lol");
             return false;
         }
         return true;
+    }
+
+    public void print(String str) {
+        System.out.println(str);
+        if (displayHandler != null) {
+            displayHandler.print(str);
+        }
+    }
+
+    public void print(String str, Color c) {
+        System.out.println(str);
+        if (displayHandler != null) {
+            displayHandler.print(str, c);
+        }
     }
 }
