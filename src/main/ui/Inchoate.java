@@ -44,7 +44,6 @@ public class Inchoate {
         player = new Player();
         makeMap();
         setupCommands();
-        welcomeText();
         this.displayHandler = displayHandler;
         // runInchoate();
     }
@@ -74,7 +73,7 @@ public class Inchoate {
     }
 
 
-    private void starting() {
+    public void starting() {
         print("Welcome to Inchoate...");
         print("Would you line to start a `new` game or `load` from existing?");
         Scanner input = new Scanner(System.in);
@@ -131,7 +130,7 @@ public class Inchoate {
     }
 
     // EFFECTS: Parse the command
-    private void processCommand(String[] command) throws IllegalArgumentException {
+    public void processCommand(String[] command) throws Exception {
         if (command[0].equals("quit")) {
             quit();
         } else if (moveCommands.contains(command[0])) {
@@ -148,10 +147,10 @@ public class Inchoate {
             viewInventory();
         } else if (command[0].equals("riddle")) {
             riddle();
-        } else if (command[0].equals("save")) {
-            save();
-        } else if (command[0].equals("load")) {
-            load();
+        } else if (command[0].equals("save") && command.length > 1) {
+            save(command[1]);
+        } else if (command[0].equals("load") && command.length > 1) {
+            load(command[1]);
         } else {
             throw new IllegalArgumentException("Invalid command!");
         }
@@ -160,22 +159,12 @@ public class Inchoate {
     // MODIFIES: this
     // EFFECTS: quit the game
     private void quit() throws IOException, IllegalArgumentException {
-        print("Would you like to save the game?");
-        Scanner input = new Scanner(System.in);
-        String command = input.nextLine().toLowerCase();
-        if (command.equals("yes")) {
-            save();
-        } else if (!command.equals("no")) {
-            throw new IllegalArgumentException("Please enter either `yes` or `no`");
-        }
-        System.out.println("Quitting game...");
-        isGameRunning = false;
+        displayHandler.quittingPhase();
     }
 
     // EFFECTS: Save file to regex: ./data/saveFile[123].save
-    private void save() throws IOException {
-        print("Choose a save file to save to [1, 2, 3]");
-        String file = getSaveFile();
+    private void save(String command) throws IOException {
+        String file = getSaveFile(command);
         try {
             SaveFileHandler.saveFile(file, player);
         } catch (IOException e) {
@@ -185,9 +174,8 @@ public class Inchoate {
     }
 
     // EFFECTS: Load file to regex: ./data/saveFile[123].save
-    private void load() throws IOException, ClassNotFoundException {
-        print("Choose a save file to load from [1, 2, 3]");
-        String file = getSaveFile();
+    private void load(String command) throws IOException, ClassNotFoundException {
+        String file = getSaveFile(command);
         try {
             SaveFileHandler.loadFile(file);
         } catch (FileNotFoundException e) {
@@ -202,9 +190,7 @@ public class Inchoate {
     }
 
     // EFFECTS: Get the save file based on user input
-    private String getSaveFile() throws IllegalArgumentException {
-        Scanner input = new Scanner(System.in);
-        String command = input.nextLine().toLowerCase();
+    private String getSaveFile(String command) throws IllegalArgumentException {
         if (!command.equals("1") && !command.equals("2") && !command.equals("3")) {
             throw new IllegalArgumentException("Please select a valid save file");
         }
@@ -277,7 +263,7 @@ public class Inchoate {
                 player.move(Direction.EAST);
                 break;
         }
-        System.out.println(player.getMap().getCurrentRoom().getName());
+        print("Location Name: " + player.getMap().getCurrentRoom().getName());
         if (!player.getMap().getCurrentRoom().isVisited()) {
             print("Location Description: " + player.getMap().getCurrentRoom().getDescription());
             player.getMap().getCurrentRoom().setVisited(true);
