@@ -8,6 +8,12 @@ import model.map.Room;
 import model.player.Player;
 import persistence.SaveFileHandler;
 
+
+import javax.security.sasl.SaslException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import java.awt.*;
 import javax.security.sasl.SaslException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,12 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+// GUI base from https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html
 // Inchoate game
 public class Inchoate {
 
-    List<String> moveCommands;
-    boolean isGameRunning;
     private Player player;
+    boolean isGameRunning;
+    List<String> moveCommands;
+    DisplayHandler displayHandler;
 
     // EFFECTS: Performs some setup and runs the Inchoate game
     public Inchoate() {
@@ -29,6 +37,16 @@ public class Inchoate {
         setupCommands();
         starting();
         runInchoate();
+    }
+
+    // EFFECTS: As above but intented for use with GUI
+    public Inchoate(DisplayHandler displayHandler) {
+        player = new Player();
+        makeMap();
+        setupCommands();
+        welcomeText();
+        this.displayHandler = displayHandler;
+        // runInchoate();
     }
 
     // MODIFIES: this
@@ -45,7 +63,7 @@ public class Inchoate {
                     processCommand(command);
                     validCommand = true;
                 } catch (Exception e) {
-                    System.out.println(e.toString().split(": ")[1]);
+                    print(e.toString().split(": ")[1], Color.RED);
                     validCommand = false;
                 }
             }
@@ -57,8 +75,8 @@ public class Inchoate {
 
 
     private void starting() {
-        System.out.println("Welcome to Inchoate...");
-        System.out.println("Would you line to start a `new` game or `load` from existing?");
+        print("Welcome to Inchoate...");
+        print("Would you line to start a `new` game or `load` from existing?");
         Scanner input = new Scanner(System.in);
         String[] command = input.nextLine().toLowerCase().split(" ", 2);
         if (command[0].equals("new")) {
@@ -79,7 +97,7 @@ public class Inchoate {
 
     // EFFECTS: Print some welcome text
     private void welcomeText() {
-        System.out.println("You find yourself in Bilgewater. "
+        print("You find yourself in Bilgewater. "
                 + "You must go save the princess from the evil clutches of the Noxian empire!");
     }
 
@@ -113,7 +131,7 @@ public class Inchoate {
     }
 
     // EFFECTS: Parse the command
-    private void processCommand(String[] command) throws Exception {
+    private void processCommand(String[] command) throws IllegalArgumentException {
         if (command[0].equals("quit")) {
             quit();
         } else if (moveCommands.contains(command[0])) {
@@ -122,9 +140,9 @@ public class Inchoate {
             here();
         } else if (command[0].equals("search")) {
             search();
-        } else if (command[0].equals("take")) {
+        } else if (command[0].equals("take") && command.length > 1) {
             take(command[1]);
-        } else if (command[0].equals("drop")) {
+        } else if (command[0].equals("drop") && command.length > 1) {
             drop(command[1]);
         } else if (command[0].equals("inventory")) {
             viewInventory();
@@ -142,7 +160,7 @@ public class Inchoate {
     // MODIFIES: this
     // EFFECTS: quit the game
     private void quit() throws IOException, IllegalArgumentException {
-        System.out.println("Would you like to save the game?");
+        print("Would you like to save the game?");
         Scanner input = new Scanner(System.in);
         String command = input.nextLine().toLowerCase();
         if (command.equals("yes")) {
@@ -156,19 +174,19 @@ public class Inchoate {
 
     // EFFECTS: Save file to regex: ./data/saveFile[123].save
     private void save() throws IOException {
-        System.out.println("Choose a save file to save to [1, 2, 3]");
+        print("Choose a save file to save to [1, 2, 3]");
         String file = getSaveFile();
         try {
             SaveFileHandler.saveFile(file, player);
         } catch (IOException e) {
             throw new IOException("Failed to save");
         }
-        System.out.println("Saved to slot " + file.charAt(15));
+        print("Saved to slot " + file.charAt(15));
     }
 
     // EFFECTS: Load file to regex: ./data/saveFile[123].save
     private void load() throws IOException, ClassNotFoundException {
-        System.out.println("Choose a save file to load from [1, 2, 3]");
+        print("Choose a save file to load from [1, 2, 3]");
         String file = getSaveFile();
         try {
             SaveFileHandler.loadFile(file);
@@ -179,7 +197,7 @@ public class Inchoate {
         } catch (ClassNotFoundException e) {
             throw new ClassNotFoundException("Class not found exception");
         }
-        System.out.println("Loaded from slot " + file.charAt(15));
+        print("Loaded from slot " + file.charAt(15));
         here();
     }
 
@@ -198,7 +216,7 @@ public class Inchoate {
         if (player.getMap().getCurrentRoom().getRiddle() == null) {
             throw new IllegalArgumentException("There is no riddle in this room");
         }
-        System.out.println(player.getMap().getCurrentRoom().getRiddle().getQuestion());
+        print(player.getMap().getCurrentRoom().getRiddle().getQuestion());
         Scanner input = new Scanner(System.in);
         String answer = input.nextLine().toLowerCase();
         answerRiddle(answer);
@@ -209,13 +227,13 @@ public class Inchoate {
     private void answerRiddle(String answer) throws IllegalArgumentException {
         player.getMap().getCurrentRoom().getRiddle().answerQuestion(answer);
         player.getQuest().addItem(player.getMap().getCurrentRoom().getRiddle().getItem());
-        System.out.println("That is the correct answer!");
-        System.out.println("You here a door unlock in a distant area...");
+        print("That is the correct answer!");
+        print("You here a door unlock in a distant area...");
     }
 
     // EFFECTS: print items in player inventory
     private void viewInventory() {
-        System.out.println(player.getInventory().getItems());
+        print(player.getInventory().getItems().toString());
     }
 
     // MODIFIES: Player
@@ -224,7 +242,7 @@ public class Inchoate {
         Item item = player.getInventory().getItem(itemName);
         player.getMap().getCurrentRoom().getInventory().addItem(item);
         player.getInventory().removeItem(itemName);
-        System.out.println("Dropped `" + itemName + "` from your inventory");
+        print("Dropped `" + itemName + "` from your inventory");
     }
 
     // MODIFIES: Player
@@ -233,13 +251,13 @@ public class Inchoate {
         Item item = player.getMap().getCurrentRoom().getInventory().getItem(itemName);
         player.getInventory().addItem(item);
         player.getMap().getCurrentRoom().getInventory().removeItem(item.getName());
-        System.out.println("Added `" + item.getName() + "` to your inventory");
+        print("Added `" + item.getName() + "` to your inventory");
     }
 
     // EFFECTS: Print out info of current room, as if you had just visited it
     private void here() {
-        System.out.println(player.getMap().getCurrentRoom().getName());
-        System.out.println(player.getMap().getCurrentRoom().getDescription());
+        print("Location Name: " + player.getMap().getCurrentRoom().getName());
+        print("Location Description : " + player.getMap().getCurrentRoom().getDescription());
     }
 
     // MODIFIES: this, Player
@@ -261,24 +279,38 @@ public class Inchoate {
         }
         System.out.println(player.getMap().getCurrentRoom().getName());
         if (!player.getMap().getCurrentRoom().isVisited()) {
-            System.out.println(player.getMap().getCurrentRoom().getDescription());
+            print("Location Description: " + player.getMap().getCurrentRoom().getDescription());
             player.getMap().getCurrentRoom().setVisited(true);
         }
     }
 
     // EFFECTS: list any items in current room
     private void search() {
-        System.out.println(player.getMap().getCurrentRoom().getInventory().getItems());
+        print(player.getMap().getCurrentRoom().getInventory().getItems().toString());
     }
 
     // EFFECTS: Check if player has win game, return false if yes, true otherwise
     //          and print some good stuff to let player know its over
     private boolean winCondition() {
         if (player.getMap().getCurrentRoom().getName().equals("Noxus")) {
-            System.out.println("Congratulations you have saved the princess or something");
-            System.out.println("The game is now over lol");
+            print("Congratulations you have saved the princess or something");
+            print("The game is now over lol");
             return false;
         }
         return true;
+    }
+
+    public void print(String str) {
+        System.out.println(str);
+        if (displayHandler != null) {
+            displayHandler.print(str);
+        }
+    }
+
+    public void print(String str, Color c) {
+        System.out.println(str);
+        if (displayHandler != null) {
+            displayHandler.print(str, c);
+        }
     }
 }
