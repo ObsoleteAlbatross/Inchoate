@@ -36,4 +36,9 @@ As a user, I want to be able to...
 - [X] Option to start new game or load game on startup
 - [X] Option to save game on quit
 ### Phase 3: GUI
+- [ ] Text field to allow access to phase 1 and 2 user stories
+- [ ] Play a sound on enter command
+- [ ] Auto completion of valid commands
+- [ ] Buttons for saving and loading
+- [ ] Play a sound on button press
 ### Phase 4: Design
