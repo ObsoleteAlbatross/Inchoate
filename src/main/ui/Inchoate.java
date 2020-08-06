@@ -8,6 +8,7 @@ import model.map.Room;
 import model.player.Player;
 import persistence.SaveFileHandler;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,14 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-// GUI base from https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html
 // Inchoate game
 public class Inchoate {
 
-    private final Player player;
-    boolean isGameRunning;
+    private Player player;
     List<String> moveCommands;
-    DisplayHandler displayHandler;
+    boolean isGameRunning;
+    private DisplayHandler displayHandler;
 
     // EFFECTS: Performs some setup and runs the Inchoate game
     public Inchoate() {
@@ -35,13 +35,13 @@ public class Inchoate {
         runInchoate();
     }
 
-    // EFFECTS: As above but intented for use with GUI
+    // EFFECTS: Game with a GUI (Display Handler)
     public Inchoate(DisplayHandler displayHandler) {
+        this.displayHandler = displayHandler;
         player = new Player();
         makeMap();
         setupCommands();
-        this.displayHandler = displayHandler;
-        // runInchoate();
+        starting();
     }
 
     // MODIFIES: this
@@ -58,7 +58,7 @@ public class Inchoate {
                     processCommand(command);
                     validCommand = true;
                 } catch (Exception e) {
-                    print(e.toString().split(": ")[1], Color.RED);
+                    System.out.println(e.toString().split(": ")[1]);
                     validCommand = false;
                 }
             }
@@ -68,32 +68,38 @@ public class Inchoate {
         }
     }
 
-
-    public void starting() {
-        print("Welcome to Inchoate...");
-        print("Would you line to start a `new` game or `load` from existing?");
-        Scanner input = new Scanner(System.in);
-        String[] command = input.nextLine().toLowerCase().split(" ", 2);
-        if (command[0].equals("new")) {
-            welcomeText();
-            return;
-        }
-        boolean validCommand = false;
-        while (!validCommand) {
-            try {
-                processCommand(command);
-                validCommand = true;
-            } catch (Exception e) {
-                System.out.println(e.toString().split(": ")[1]);
-                validCommand = false;
+    // MODIFIES: this
+    // EFFECTS: run through starting sequence
+    private void starting() {
+        displayHandler.print("Would you line to start a `new` game or `load` from existing?", Color.BLUE);
+        displayHandler.addCommand("new");
+        displayHandler.addCommand("load");
+        ActionListener actionListener = new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                displayHandler.getTextField().removeActionListener(this);
+                String command = displayHandler.getTextField().getText();
+                displayHandler.print(command, Color.BLACK);
+                if (command.equals("new")) {
+                    displayHandler.initGame();
+                    welcomeText();
+                    return;
+                }
+                try {
+                    String[] commands = {command};
+                    processCommand(commands);
+                } catch (Exception exception) {
+                    displayHandler.print(exception.toString().split(": ")[1], Color.RED);
+                    displayHandler.getTextField().addActionListener(this);
+                }
             }
-        }
+        };
+        displayHandler.getTextField().addActionListener(actionListener);
     }
 
     // EFFECTS: Print some welcome text
     private void welcomeText() {
-        print("You find yourself in Bilgewater. "
-                + "You must go save the princess from the evil clutches of the Noxian empire!");
+        displayHandler.print("You find yourself in Bilgewater. "
+                + "You must go save the princess from the evil clutches of the Noxian empire!", Color.BLUE);
     }
 
     // MODIFIES: Player
@@ -135,18 +141,18 @@ public class Inchoate {
             here();
         } else if (command[0].equals("search")) {
             search();
-        } else if (command[0].equals("take") && command.length > 1) {
+        } else if (command[0].equals("take")) {
             take(command[1]);
-        } else if (command[0].equals("drop") && command.length > 1) {
+        } else if (command[0].equals("drop")) {
             drop(command[1]);
         } else if (command[0].equals("inventory")) {
             viewInventory();
         } else if (command[0].equals("riddle")) {
             riddle();
-        } else if (command[0].equals("save") && command.length > 1) {
-            save(command[1]);
-        } else if (command[0].equals("load") && command.length > 1) {
-            load(command[1]);
+        } else if (command[0].equals("save")) {
+            save();
+        } else if (command[0].equals("load")) {
+            load();
         } else {
             throw new IllegalArgumentException("Invalid command!");
         }
@@ -154,26 +160,95 @@ public class Inchoate {
 
     // MODIFIES: this
     // EFFECTS: quit the game
-    private void quit() throws IOException, IllegalArgumentException {
-        displayHandler.quittingPhase();
+    private void quit() throws IllegalArgumentException {
+        displayHandler.print("Are you sure you want to quit?", Color.BLUE);
+        ActionListener actionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayHandler.getTextField().removeActionListener(this);
+                String command = displayHandler.getTextField().getText();
+                displayHandler.print(command, Color.BLACK);
+                if (command.equals("yes")) {
+                    displayHandler.print("Quitting game...", Color.BLUE);
+                    try {
+                        Thread.sleep(4000);
+                    } catch (Exception exception) {
+                        // do nothing
+                    }
+                    System.exit(0);
+                }
+            }
+        };
+        displayHandler.getTextField().addActionListener(actionListener);
     }
 
     // EFFECTS: Save file to regex: ./data/saveFile[123].save
-    private void save(String command) throws IOException {
-        String file = getSaveFile(command);
+    private void save() {
+        displayHandler.print("Choose a save file to save to [1, 2, 3]", Color.BLUE);
+        ActionListener actionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                displayHandler.getTextField().removeActionListener(this);
+                String command = displayHandler.getTextField().getText();
+                displayHandler.print(command, Color.BLACK);
+
+                if (!command.equals("1") && !command.equals("2") && !command.equals("3")) {
+                    displayHandler.getTextField().addActionListener(this);
+                    throw new IllegalArgumentException("Please select a valid save file");
+                } else {
+                    try {
+                        saveFile("./data/saveFile" + command + ".save");
+                    } catch (Exception exception) {
+                        displayHandler.print(exception.toString().split(": ")[1], Color.RED);
+                        displayHandler.getTextField().addActionListener(this);
+                    }
+                }
+            }
+        };
+        displayHandler.getTextField().addActionListener(actionListener);
+    }
+
+    // EFFECTS: save file
+    private void saveFile(String file) throws IOException {
         try {
             SaveFileHandler.saveFile(file, player);
         } catch (IOException e) {
             throw new IOException("Failed to save");
         }
-        print("Saved to slot " + file.charAt(15));
+        displayHandler.print("Saved to slot " + file.charAt(15), Color.BLUE);
     }
 
     // EFFECTS: Load file to regex: ./data/saveFile[123].save
-    private void load(String command) throws IOException, ClassNotFoundException {
-        String file = getSaveFile(command);
+    private void load() {
+        displayHandler.print("Choose a save file to load from [1, 2, 3]", Color.BLUE);
+        ActionListener actionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                displayHandler.getTextField().removeActionListener(this);
+                String command = displayHandler.getTextField().getText();
+                displayHandler.print(command, Color.BLACK);
+
+                if (!command.equals("1") && !command.equals("2") && !command.equals("3")) {
+                    displayHandler.getTextField().addActionListener(this);
+                    throw new IllegalArgumentException("Please select a valid save file");
+                } else {
+                    try {
+                        loadFile("./data/saveFile" + command + ".save");
+                    } catch (Exception e) {
+                        displayHandler.print(e.toString().split(": ")[1], Color.RED);
+                        displayHandler.getTextField().addActionListener(this);
+                    }
+                }
+            }
+        };
+        displayHandler.getTextField().addActionListener(actionListener);
+
+    }
+
+    // EFFECTS: Load file
+    private void loadFile(String file) throws IOException, ClassNotFoundException {
         try {
-            SaveFileHandler.loadFile(file);
+            player = SaveFileHandler.loadFile(file);
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("Can't load a save file that doesn't exist");
         } catch (IOException e) {
@@ -181,23 +256,9 @@ public class Inchoate {
         } catch (ClassNotFoundException e) {
             throw new ClassNotFoundException("Class not found exception");
         }
-        print("Loaded from slot " + file.charAt(15));
+        displayHandler.initGame();
+        displayHandler.print("Loaded from slot " + file.charAt(15), Color.BLUE);
         here();
-    }
-
-    // EFFECTS: Get the save file based on user input
-    private String getSaveFile() throws IllegalArgumentException {
-        DisplayHandler.textField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String command = e.getActionCommand();
-                save = command;
-                if (!command.equals("1") && !command.equals("2") && !command.equals("3")) {
-                    throw new IllegalArgumentException("Please select a valid save file");
-                }
-            }
-        });
-        return "./data/saveFile" + save + ".save";
     }
 
     // EFFECTS: Shows the riddle question if it exists
@@ -205,7 +266,7 @@ public class Inchoate {
         if (player.getMap().getCurrentRoom().getRiddle() == null) {
             throw new IllegalArgumentException("There is no riddle in this room");
         }
-        print(player.getMap().getCurrentRoom().getRiddle().getQuestion());
+        displayHandler.print(player.getMap().getCurrentRoom().getRiddle().getQuestion(), Color.BLUE);
         Scanner input = new Scanner(System.in);
         String answer = input.nextLine().toLowerCase();
         answerRiddle(answer);
@@ -216,13 +277,13 @@ public class Inchoate {
     private void answerRiddle(String answer) throws IllegalArgumentException {
         player.getMap().getCurrentRoom().getRiddle().answerQuestion(answer);
         player.getQuest().addItem(player.getMap().getCurrentRoom().getRiddle().getItem());
-        print("That is the correct answer!");
-        print("You here a door unlock in a distant area...");
+        displayHandler.print("That is the correct answer!", Color.BLUE);
+        displayHandler.print("You here a door unlock in a distant area...", Color.BLUE);
     }
 
     // EFFECTS: print items in player inventory
     private void viewInventory() {
-        print(player.getInventory().getItems().toString());
+        displayHandler.print(player.getInventory().getItems().toString(), Color.BLUE);
     }
 
     // MODIFIES: Player
@@ -231,7 +292,7 @@ public class Inchoate {
         Item item = player.getInventory().getItem(itemName);
         player.getMap().getCurrentRoom().getInventory().addItem(item);
         player.getInventory().removeItem(itemName);
-        print("Dropped `" + itemName + "` from your inventory");
+        displayHandler.print("Dropped `" + itemName + "` from your inventory", Color.BLUE);
     }
 
     // MODIFIES: Player
@@ -240,13 +301,13 @@ public class Inchoate {
         Item item = player.getMap().getCurrentRoom().getInventory().getItem(itemName);
         player.getInventory().addItem(item);
         player.getMap().getCurrentRoom().getInventory().removeItem(item.getName());
-        print("Added `" + item.getName() + "` to your inventory");
+        displayHandler.print("Added `" + item.getName() + "` to your inventory", Color.BLUE);
     }
 
     // EFFECTS: Print out info of current room, as if you had just visited it
     private void here() {
-        print("Location Name: " + player.getMap().getCurrentRoom().getName());
-        print("Location Description : " + player.getMap().getCurrentRoom().getDescription());
+        displayHandler.print(player.getMap().getCurrentRoom().getName(), Color.BLUE);
+        displayHandler.print(player.getMap().getCurrentRoom().getDescription(), Color.BLUE);
     }
 
     // MODIFIES: this, Player
@@ -266,40 +327,26 @@ public class Inchoate {
                 player.move(Direction.EAST);
                 break;
         }
-        print("Location Name: " + player.getMap().getCurrentRoom().getName());
+        displayHandler.print(player.getMap().getCurrentRoom().getName(), Color.BLUE);
         if (!player.getMap().getCurrentRoom().isVisited()) {
-            print("Location Description: " + player.getMap().getCurrentRoom().getDescription());
+            displayHandler.print(player.getMap().getCurrentRoom().getDescription(), Color.BLUE);
             player.getMap().getCurrentRoom().setVisited(true);
         }
     }
 
     // EFFECTS: list any items in current room
     private void search() {
-        print(player.getMap().getCurrentRoom().getInventory().getItems().toString());
+        displayHandler.print(player.getMap().getCurrentRoom().getInventory().getItems().toString(), Color.BLUE);
     }
 
     // EFFECTS: Check if player has win game, return false if yes, true otherwise
     //          and print some good stuff to let player know its over
     private boolean winCondition() {
         if (player.getMap().getCurrentRoom().getName().equals("Noxus")) {
-            print("Congratulations you have saved the princess or something");
-            print("The game is now over lol");
+            displayHandler.print("Congratulations you have saved the princess or something", Color.BLUE);
+            displayHandler.print("The game is now over lol", Color.BLUE);
             return false;
         }
         return true;
-    }
-
-    public void print(String str) {
-        System.out.println(str);
-        if (displayHandler != null) {
-            displayHandler.print(str);
-        }
-    }
-
-    public void print(String str, Color c) {
-        System.out.println(str);
-        if (displayHandler != null) {
-            displayHandler.print(str, c);
-        }
     }
 }
