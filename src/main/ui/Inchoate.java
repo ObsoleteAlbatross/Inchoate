@@ -8,13 +8,9 @@ import model.map.Room;
 import model.player.Player;
 import persistence.SaveFileHandler;
 
-
-import javax.security.sasl.SaslException;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import java.awt.*;
-import javax.security.sasl.SaslException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,7 +21,7 @@ import java.util.Scanner;
 // Inchoate game
 public class Inchoate {
 
-    private Player player;
+    private final Player player;
     boolean isGameRunning;
     List<String> moveCommands;
     DisplayHandler displayHandler;
@@ -190,11 +186,18 @@ public class Inchoate {
     }
 
     // EFFECTS: Get the save file based on user input
-    private String getSaveFile(String command) throws IllegalArgumentException {
-        if (!command.equals("1") && !command.equals("2") && !command.equals("3")) {
-            throw new IllegalArgumentException("Please select a valid save file");
-        }
-        return "./data/saveFile" + command + ".save";
+    private String getSaveFile() throws IllegalArgumentException {
+        DisplayHandler.textField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String command = e.getActionCommand();
+                save = command;
+                if (!command.equals("1") && !command.equals("2") && !command.equals("3")) {
+                    throw new IllegalArgumentException("Please select a valid save file");
+                }
+            }
+        });
+        return "./data/saveFile" + save + ".save";
     }
 
     // EFFECTS: Shows the riddle question if it exists
