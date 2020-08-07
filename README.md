@@ -42,3 +42,20 @@ As a user, I want to be able to...
 - [ ] Buttons for saving and loading
 - [ ] Play a sound on button press
 ### Phase 4: Design
+
+## User Manual
+These are the basic commands. Some commands may have sub 
+commands such as `save` and `load` that become available. Their usage is self explanatory since it
+will be shown to you the available commands.
+- Typing a cardinal direction (`north`, `east`, `south`, `west`), lets you move in that direction.
+- To access your inventory, type `inventory`.
+- To attempt a riddle in a room (if available), type `riddle`.
+- `here` to see information about a room.
+- You can `search` for available items in a room.
+- Type `take` then the item name to add it to your inventory. For example if you have an item `item`,
+you can type `take item` to take it.
+- `drop` to do the opposite of `take`, i.e. removing an item from your inventory and 
+placing it in the room.
+- `save` and `load` to save and load. You can choose any of the save files 1, 2, or 3. Those
+options will become available after typing in the save or load command.
+

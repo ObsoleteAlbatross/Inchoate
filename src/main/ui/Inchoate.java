@@ -141,10 +141,8 @@ public class Inchoate {
             here();
         } else if (command[0].equals("search")) {
             search();
-        } else if (command[0].equals("take")) {
-            take(command[1]);
-        } else if (command[0].equals("drop")) {
-            drop(command[1]);
+        } else if (command[0].equals("take") || command[0].equals("drop")) {
+            inventoryCommands(command);
         } else if (command[0].equals("inventory")) {
             viewInventory();
         } else if (command[0].equals("riddle")) {
@@ -153,9 +151,23 @@ public class Inchoate {
             save();
         } else if (command[0].equals("load")) {
             load();
+        } else if (command[0].equals("help")) {
+            help();
         } else {
             throw new IllegalArgumentException("Invalid command!");
         }
+    }
+
+    private void inventoryCommands(String[] command) throws IllegalArgumentException {
+        if (command[0].equals("take")) {
+            take(command[1]);
+        } else if (command[0].equals("drop")) {
+            drop(command[1]);
+        }
+    }
+
+    private void help() {
+        displayHandler.print("There is a basic user manual with commands in the README", Color.BLUE);
     }
 
     // MODIFIES: this
