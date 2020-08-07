@@ -5,6 +5,12 @@
 
 package ui;
 
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -15,6 +21,10 @@ import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,13 +33,16 @@ import java.util.List;
 public class DisplayHandler extends JFrame implements DocumentListener, ActionListener {
 
     private static final String COMMIT_ACTION = "commit";
-    private static final String newline = "\n";
+    private static final String NEWLINE = "\n";
+    private static final String HITSOUND = "./data/hit_sound.wav";
+    private final Inchoate inchoate;
     public JTextField textField;
+    protected JButton button1;
+    protected JButton button2;
     private JScrollPane scrollPane;
     private JTextPane textPane;
     private List<String> commandWords;
     private Mode mode = Mode.INSERT;
-    private final Inchoate inchoate;
 
     // EFFECTS: Initalize GUI fields
     public DisplayHandler() {
@@ -62,9 +75,9 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
                 }
                 print(command, Color.BLACK);
                 try {
-                        inchoate.processCommand(command.toLowerCase().split(" ", 2));
+                    inchoate.processCommand(command.toLowerCase().split(" ", 2));
                 } catch (Exception exception) {
-                        print(exception.toString().split(": ")[1], Color.RED);
+                    print(exception.toString().split(": ")[1], Color.RED);
                 }
             }
         };
@@ -130,6 +143,20 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
         textField.addActionListener(this);
         textField.setBackground(Color.WHITE);
         textField.setForeground(Color.BLACK);
+
+        button1 = new JButton("Quick Save");
+        button1.setVerticalTextPosition(AbstractButton.CENTER);
+        button1.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
+        button1.setMnemonic(KeyEvent.VK_D);
+        button1.setActionCommand("quick save");
+        button1.addActionListener(this);
+
+        button2 = new JButton("Quick Load");
+        button2.setVerticalTextPosition(AbstractButton.CENTER);
+        button2.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
+        button2.setMnemonic(KeyEvent.VK_D);
+        button2.setActionCommand("quick load");
+        button2.addActionListener(this);
     }
 
     // REQUIRES: Called after init components [Using initGUI() wrapper]
@@ -138,60 +165,92 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
     private void initLayout() {
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-
-        //Create a parallel group for the horizontal axis
-        GroupLayout.ParallelGroup horzGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        //Create a sequential and a parallel groups
-        GroupLayout.SequentialGroup h1 = layout.createSequentialGroup();
-        GroupLayout.ParallelGroup h2 = layout.createParallelGroup(GroupLayout.Alignment.TRAILING);
-        //Add a scroll panel and a label to the parallel group h2
-        h2.addComponent(textField, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
-        h2.addComponent(scrollPane, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
-
-        //Add a container gap to the sequential group h1
-        h1.addContainerGap();
-        // Add the group h2 to the group h1
-        h1.addGroup(h2);
-        h1.addContainerGap();
-        //Add the group h1 to horzGroup
-        horzGroup.addGroup(GroupLayout.Alignment.TRAILING, h1);
-        //Create the horizontal group
-        layout.setHorizontalGroup(horzGroup);
-
-        //Create a parallel group for the vertical axis
-        GroupLayout.ParallelGroup vertGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        //Create a sequential group
-        GroupLayout.SequentialGroup v1 = layout.createSequentialGroup();
-        //Add a container gap to the sequential group v1
-        v1.addContainerGap();
-        // Add text field
-        v1.addComponent(textField, GroupLayout.DEFAULT_SIZE, 25, 25);
-        v1.addContainerGap();
-        //Add scroll panel to the sequential group v1
-        v1.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE);
-        v1.addContainerGap();
-        //Add the group v1 to vertGroup
-        vertGroup.addGroup(v1);
-        //Create the vertical group
-        layout.setVerticalGroup(vertGroup);
+        horzGroup(layout);
+        vertGroup(layout);
         pack();
     }
 
     // MODIFIES: this
-    // EFFECTS: Append the text in field to textPane
-    public void actionPerformed(ActionEvent actionEvent) {
-        String command = textField.getText();
-        // print(command, Color.RED);
-        // textArea.append(text + newline);
-        textField.selectAll();
+    // EFFECTS: init horizontal group
+    private void horzGroup(GroupLayout layout) {
+        GroupLayout.ParallelGroup horzGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        GroupLayout.SequentialGroup h1 = layout.createSequentialGroup();
+        GroupLayout.ParallelGroup h2 = layout.createParallelGroup(GroupLayout.Alignment.TRAILING);
+        h2.addComponent(button1, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
+        h2.addComponent(button2, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
+        h2.addComponent(textField, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
+        h2.addComponent(scrollPane, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
 
-        //Make sure the new text is visible, even if there
-        //was a selection in the text area.
+        h1.addContainerGap();
+        h1.addGroup(h2);
+        h1.addContainerGap();
+        horzGroup.addGroup(GroupLayout.Alignment.TRAILING, h1);
+        layout.setHorizontalGroup(horzGroup);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: init vertical group
+    private void vertGroup(GroupLayout layout) {
+        GroupLayout.ParallelGroup vertGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        GroupLayout.SequentialGroup v1 = layout.createSequentialGroup();
+        v1.addContainerGap();
+        v1.addComponent(textField, GroupLayout.DEFAULT_SIZE, 25, 25);
+        v1.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE);
+        v1.addComponent(button1);
+        v1.addComponent(button2);
+        v1.addContainerGap();
+        vertGroup.addGroup(v1);
+        layout.setVerticalGroup(vertGroup);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: Main action listener
+    public void actionPerformed(ActionEvent actionEvent) {
+        handleTextField();
+        handleButtons(actionEvent);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: append text in text field to pane
+    private void handleTextField() {
+        textField.selectAll();
         textPane.setCaretPosition(textPane.getDocument().getLength());
     }
 
+    // EFFECTS: handle buttons presses and play a sound
+    private void handleButtons(ActionEvent actionEvent) {
+        String command = actionEvent.getActionCommand();
+        try {
+            if (command.equals("quick save")) {
+                playSound(HITSOUND);
+                inchoate.saveFile("./data/saveFile0.save");
+            } else if (command.equals("quick load")) {
+                playSound(HITSOUND);
+                inchoate.loadFile("./data/saveFile0.save");
+            }
+        } catch (Exception exception) {
+            print(exception.toString().split(": ")[1], Color.RED);
+        }
+    }
 
-    // Listeners
+    // Source : https://stackoverflow.com/questions/26305/how-can-i-play-sound-in-java
+    // EFFECTS: play the given sound file in a new thread
+    private void playSound(final String url) {
+        try {
+            File file = new File(url);
+            // Clip clip = AudioSystem.getClip();
+            // AudioInputStream inputStream = AudioSystem.getAudioInputStream(
+            //         Main.class.getResourceAsStream(file.getAbsolutePath()));
+            // clip.open(inputStream);
+            // clip.start();
+            FileInputStream is = new FileInputStream(file);
+            AudioStream audioStream = new AudioStream(is);
+            AudioPlayer.player.start(audioStream);
+        } catch (Exception e) {
+            System.out.println(e);
+            System.err.println(e.getMessage());
+        }
+    }
 
     // EFFECTS: Do something on change
     public void changedUpdate(DocumentEvent ev) {
@@ -261,7 +320,7 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
         StyleConstants.setBackground(attributeSet, textPane.getBackground());
         Document doc = textPane.getStyledDocument();
         try {
-            doc.insertString(doc.getLength(), str + newline, attributeSet);
+            doc.insertString(doc.getLength(), str + NEWLINE, attributeSet);
         } catch (Exception e) {
             // do nothing
         }

@@ -209,7 +209,7 @@ public class Inchoate {
     }
 
     // EFFECTS: save file
-    private void saveFile(String file) throws IOException {
+    public void saveFile(String file) throws IOException {
         try {
             SaveFileHandler.saveFile(file, player);
         } catch (IOException e) {
@@ -246,7 +246,7 @@ public class Inchoate {
     }
 
     // EFFECTS: Load file
-    private void loadFile(String file) throws IOException, ClassNotFoundException {
+    public void loadFile(String file) throws IOException, ClassNotFoundException {
         try {
             player = SaveFileHandler.loadFile(file);
         } catch (FileNotFoundException e) {
@@ -306,8 +306,8 @@ public class Inchoate {
 
     // EFFECTS: Print out info of current room, as if you had just visited it
     private void here() {
-        displayHandler.print(player.getMap().getCurrentRoom().getName(), Color.BLUE);
-        displayHandler.print(player.getMap().getCurrentRoom().getDescription(), Color.BLUE);
+        displayHandler.print("Location name: " + player.getMap().getCurrentRoom().getName(), Color.BLUE);
+        displayHandler.print("Location description: " + player.getMap().getCurrentRoom().getDescription(), Color.BLUE);
     }
 
     // MODIFIES: this, Player
@@ -327,9 +327,10 @@ public class Inchoate {
                 player.move(Direction.EAST);
                 break;
         }
-        displayHandler.print(player.getMap().getCurrentRoom().getName(), Color.BLUE);
+        displayHandler.print("Location name: " + player.getMap().getCurrentRoom().getName(), Color.BLUE);
         if (!player.getMap().getCurrentRoom().isVisited()) {
-            displayHandler.print(player.getMap().getCurrentRoom().getDescription(), Color.BLUE);
+            displayHandler.print("Location descripton: "
+                    + player.getMap().getCurrentRoom().getDescription(), Color.BLUE);
             player.getMap().getCurrentRoom().setVisited(true);
         }
     }
