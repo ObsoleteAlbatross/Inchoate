@@ -43,7 +43,7 @@ As a user, I want to be able to...
 - [X] Play a sound on button press
 ### Phase 4: Design
 
-## User Manual
+## <a name="user-manual"></a> User Manual
 These are the basic commands. Some commands may have sub 
 commands such as `save` and `load` that become available. Their usage is self explanatory since it
 will be shown to you the available commands.
@@ -58,4 +58,15 @@ you can type `take item` to take it.
 placing it in the room.
 - `save` and `load` to save and load. You can choose any of the save files 1, 2, or 3. Those
 options will become available after typing in the save or load command.
+
+## Instructions for Grader
+- You can generate the first required event by using the text field.
+There are some items `west` of the starting room. You can `take` and `drop` the items.
+See the [User Manual](#user-manual).
+- You can generate the second required event by clicking on the buttons labelled
+`Take All` and `Drop All`.
+- You can locate my visual component by using your eyes.
+- You can trigger my audio component by clicking on any of the buttons
+- You can save and reload the state of my application by clicking on the `Quick Save` or `Quick Load`
+buttons. You can also save and load by using the text field. See the [User Manual](#user-manual).
 
