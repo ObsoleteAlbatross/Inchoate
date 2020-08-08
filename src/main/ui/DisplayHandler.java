@@ -5,12 +5,10 @@
 
 package ui;
 
+import model.item.Item;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -24,7 +22,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,8 +34,10 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
     private static final String HITSOUND = "./data/hit_sound.wav";
     private final Inchoate inchoate;
     public JTextField textField;
-    protected JButton button1;
-    protected JButton button2;
+    protected JButton buttonSave;
+    protected JButton buttonLoad;
+    protected JButton buttonTake;
+    protected JButton buttonDrop;
     private JScrollPane scrollPane;
     private JTextPane textPane;
     private List<String> commandWords;
@@ -65,6 +64,8 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
         initActionListener();
     }
 
+    // MODIFIES: this, inchoate
+    // EFFECTS: Init action listener
     private void initActionListener() {
         ActionListener actionListener = new ActionListener() {
             @Override
@@ -144,19 +145,28 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
         textField.setBackground(Color.WHITE);
         textField.setForeground(Color.BLACK);
 
-        button1 = new JButton("Quick Save");
-        button1.setVerticalTextPosition(AbstractButton.CENTER);
-        button1.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
-        button1.setMnemonic(KeyEvent.VK_D);
-        button1.setActionCommand("quick save");
-        button1.addActionListener(this);
+        initButtons();
+    }
 
-        button2 = new JButton("Quick Load");
-        button2.setVerticalTextPosition(AbstractButton.CENTER);
-        button2.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
-        button2.setMnemonic(KeyEvent.VK_D);
-        button2.setActionCommand("quick load");
-        button2.addActionListener(this);
+    // MODIFIES: this
+    // EFFECTS: Inits all the buttons
+    private void initButtons() {
+        buttonSave = initButton("Quick Save");
+        buttonLoad = initButton("Quick Load");
+        buttonDrop = initButton("Drop All");
+        buttonTake = initButton("Take All");
+    }
+
+    // MODIFIES: this
+    // EFFECTS: Init the given button with given name
+    private JButton initButton(String name) {
+        JButton button = new JButton(name);
+        button.setVerticalTextPosition(AbstractButton.CENTER);
+        button.setHorizontalTextPosition(AbstractButton.LEADING); //aka LEFT, for left-to-right locales
+        button.setMnemonic(KeyEvent.VK_D);
+        button.setActionCommand(name.toLowerCase());
+        button.addActionListener(this);
+        return button;
     }
 
     // REQUIRES: Called after init components [Using initGUI() wrapper]
@@ -176,8 +186,10 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
         GroupLayout.ParallelGroup horzGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
         GroupLayout.SequentialGroup h1 = layout.createSequentialGroup();
         GroupLayout.ParallelGroup h2 = layout.createParallelGroup(GroupLayout.Alignment.TRAILING);
-        h2.addComponent(button1, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
-        h2.addComponent(button2, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
+        h2.addComponent(buttonSave, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
+        h2.addComponent(buttonLoad, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
+        h2.addComponent(buttonTake, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
+        h2.addComponent(buttonDrop, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
         h2.addComponent(textField, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
         h2.addComponent(scrollPane, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
 
@@ -196,8 +208,10 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
         v1.addContainerGap();
         v1.addComponent(textField, GroupLayout.DEFAULT_SIZE, 25, 25);
         v1.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE);
-        v1.addComponent(button1);
-        v1.addComponent(button2);
+        v1.addComponent(buttonTake);
+        v1.addComponent(buttonDrop);
+        v1.addComponent(buttonSave);
+        v1.addComponent(buttonLoad);
         v1.addContainerGap();
         vertGroup.addGroup(v1);
         layout.setVerticalGroup(vertGroup);
@@ -227,9 +241,41 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
             } else if (command.equals("quick load")) {
                 playSound(HITSOUND);
                 inchoate.loadFile("./data/saveFile0.save");
+            } else if (command.equals("take all")) {
+                playSound(HITSOUND);
+                takeAll();
+            } else if (command.equals("drop all")) {
+                playSound(HITSOUND);
+                dropAll();
             }
         } catch (Exception exception) {
             print(exception.toString().split(": ")[1], Color.RED);
+        }
+    }
+
+    // MODIFIES: inchoate, player
+    // EFFECTS: Take all items from room
+    private void takeAll() {
+        List<Item> items = inchoate.player.getMap().getCurrentRoom().getInventory().getItems();
+        if (items.size() == 0) {
+            print("There are no items in this room", Color.BLUE);
+        } else {
+            for (int i = items.size() - 1; i >= 0; i--) {
+                inchoate.take(items.get(i).getName());
+            }
+        }
+    }
+
+    // MODIFIES: inchoate, player
+    // EFFECTS: Drop all items from inventory
+    private void dropAll() {
+        List<Item> items = inchoate.player.getInventory().getItems();
+        if (items.size() == 0) {
+            print("There are no items in your inventory", Color.BLUE);
+        } else {
+            for (int i = items.size() - 1; i >= 0; i--) {
+                inchoate.drop(items.get(i).getName());
+            }
         }
     }
 

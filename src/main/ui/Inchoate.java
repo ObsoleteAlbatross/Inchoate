@@ -21,7 +21,7 @@ import java.util.Scanner;
 // Inchoate game
 public class Inchoate {
 
-    private Player player;
+    public Player player;
     List<String> moveCommands;
     boolean isGameRunning;
     private DisplayHandler displayHandler;
@@ -158,6 +158,7 @@ public class Inchoate {
         }
     }
 
+    // EFFECTS: Handle inventory related commands
     private void inventoryCommands(String[] command) throws IllegalArgumentException {
         if (command[0].equals("take")) {
             take(command[1]);
@@ -166,6 +167,7 @@ public class Inchoate {
         }
     }
 
+    // EFFECTS: Print some help message
     private void help() {
         displayHandler.print("There is a basic user manual with commands in the README", Color.BLUE);
     }
@@ -230,6 +232,7 @@ public class Inchoate {
         displayHandler.print("Saved to slot " + file.charAt(15), Color.BLUE);
     }
 
+    // MODIFIES: this, player
     // EFFECTS: Load file to regex: ./data/saveFile[123].save
     private void load() {
         displayHandler.print("Choose a save file to load from [1, 2, 3]", Color.BLUE);
@@ -257,6 +260,7 @@ public class Inchoate {
 
     }
 
+    // MODIFIES: this, player
     // EFFECTS: Load file
     public void loadFile(String file) throws IOException, ClassNotFoundException {
         try {
@@ -300,7 +304,7 @@ public class Inchoate {
 
     // MODIFIES: Player
     // EFFECTS: Take a given item from inventory and put in room
-    private void drop(String itemName) throws IllegalArgumentException {
+    public void drop(String itemName) throws IllegalArgumentException {
         Item item = player.getInventory().getItem(itemName);
         player.getMap().getCurrentRoom().getInventory().addItem(item);
         player.getInventory().removeItem(itemName);
@@ -309,7 +313,7 @@ public class Inchoate {
 
     // MODIFIES: Player
     // EFFECTS: Take a given item from room and put in player inventory
-    void take(String itemName) throws IllegalArgumentException {
+    public void take(String itemName) throws IllegalArgumentException {
         Item item = player.getMap().getCurrentRoom().getInventory().getItem(itemName);
         player.getInventory().addItem(item);
         player.getMap().getCurrentRoom().getInventory().removeItem(item.getName());
