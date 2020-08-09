@@ -183,38 +183,46 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
     // MODIFIES: this
     // EFFECTS: init horizontal group
     private void horzGroup(GroupLayout layout) {
-        GroupLayout.ParallelGroup horzGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        GroupLayout.SequentialGroup h1 = layout.createSequentialGroup();
-        GroupLayout.ParallelGroup h2 = layout.createParallelGroup(GroupLayout.Alignment.TRAILING);
-        h2.addComponent(buttonSave, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
-        h2.addComponent(buttonLoad, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
-        h2.addComponent(buttonTake, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
-        h2.addComponent(buttonDrop, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
-        h2.addComponent(textField, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
-        h2.addComponent(scrollPane, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE);
-
-        h1.addContainerGap();
-        h1.addGroup(h2);
-        h1.addContainerGap();
-        horzGroup.addGroup(GroupLayout.Alignment.TRAILING, h1);
-        layout.setHorizontalGroup(horzGroup);
+        layout.setHorizontalGroup(
+                layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
+                                .addComponent(textField, GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                .addComponent(buttonTake, GroupLayout.DEFAULT_SIZE,
+                                                        212, Short.MAX_VALUE)
+                                                .addComponent(buttonSave, GroupLayout.DEFAULT_SIZE,
+                                                        212, Short.MAX_VALUE))
+                                        .addGap(10)
+                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                .addComponent(buttonLoad, GroupLayout.DEFAULT_SIZE,
+                                                        212, Short.MAX_VALUE)
+                                                .addComponent(buttonDrop, GroupLayout.DEFAULT_SIZE,
+                                                        212, Short.MAX_VALUE))))
+                        .addContainerGap());
     }
 
     // MODIFIES: this
     // EFFECTS: init vertical group
     private void vertGroup(GroupLayout layout) {
-        GroupLayout.ParallelGroup vertGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
-        GroupLayout.SequentialGroup v1 = layout.createSequentialGroup();
-        v1.addContainerGap();
-        v1.addComponent(textField, GroupLayout.DEFAULT_SIZE, 25, 25);
-        v1.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE);
-        v1.addComponent(buttonTake);
-        v1.addComponent(buttonDrop);
-        v1.addComponent(buttonSave);
-        v1.addComponent(buttonLoad);
-        v1.addContainerGap();
-        vertGroup.addGroup(v1);
-        layout.setVerticalGroup(vertGroup);
+        layout.setVerticalGroup(
+                layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(textField, GroupLayout.DEFAULT_SIZE, 25, 25)
+                                .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
+                        .addGap(10)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(buttonDrop)
+                                        .addComponent(buttonTake))
+                                .addGap(10)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(buttonSave)
+                                        .addComponent(buttonLoad)))
+                        .addContainerGap());
     }
 
     // MODIFIES: this
