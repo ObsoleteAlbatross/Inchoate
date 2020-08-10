@@ -287,21 +287,12 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
         }
     }
 
-    // Source : https://stackoverflow.com/questions/26305/how-can-i-play-sound-in-java
-    // EFFECTS: play the given sound file in a new thread
+    // Adapted from : https://stackoverflow.com/questions/26305/how-can-i-play-sound-in-java
+    // EFFECTS: play the given sound file
     private void playSound(final String url) {
         try {
-            File file = new File(url);
-            // Clip clip = AudioSystem.getClip();
-            // AudioInputStream inputStream = AudioSystem.getAudioInputStream(
-            //         Main.class.getResourceAsStream(file.getAbsolutePath()));
-            // clip.open(inputStream);
-            // clip.start();
-            FileInputStream is = new FileInputStream(file);
-            AudioStream audioStream = new AudioStream(is);
-            AudioPlayer.player.start(audioStream);
+            AudioPlayer.player.start(new AudioStream(new FileInputStream(new File(url))));
         } catch (Exception e) {
-            System.out.println(e);
             System.err.println(e.getMessage());
         }
     }
