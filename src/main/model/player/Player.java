@@ -5,6 +5,7 @@ import model.item.Item;
 import model.map.Direction;
 import model.map.Map;
 
+import javax.management.DescriptorRead;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -28,24 +29,19 @@ public class Player implements Serializable {
     public void move(Direction direction) throws IllegalArgumentException {
         int destination = map.getCurrentRoom().getDestinationFromDirection(direction);
         // Check if direction is valid
-        if (map.getCurrentRoom().getDestinationFromDirection(direction) == -1) {
+        if (!map.getCurrentRoom().isValidDirection(direction)) {
             throw new IllegalArgumentException("You can't go there! There's nothing there!");
         }
-        if (!hasItemByName(map.getRoomByIndex(destination).getRequired())) {
+        if (!hasItem(map.getRoomInDirection(direction).getRequired())) {
             throw new IllegalArgumentException("That area is locked! You require `"
                     + map.getRoomByIndex(destination).getRequired().getName() + "`");
         }
-        map.setCurrentIndex(destination);
+        map.move(direction);
     }
 
     // EFFECTS: Return if player has the given item in either quest or inventory
-    public boolean hasItemByName(Item item) {
-        return hasItemLoop(item, quest) || hasItemLoop(item, inventory);
-    }
-
-    // EFFECTS: Return if a given item is in a given inventory
-    private boolean hasItemLoop(Item item, Inventory inventory) {
-        return inventory.getItems().containsKey(item.getName());
+    public boolean hasItem(Item item) {
+        return quest.hasItem(item) || inventory.hasItem(item);
     }
 
     // EFFECTS: Return the map

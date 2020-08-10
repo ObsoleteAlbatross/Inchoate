@@ -44,7 +44,7 @@ public class PlayerTest {
     void testMoveGoodHiddenInventory() {
         player.getQuest().addItem(new Item("name", "desc"));
         player.move(Direction.WEST);
-        assertTrue(player.hasItemByName(new Item("name", "desc")));
+        assertTrue(player.hasItem(new Item("name", "desc")));
         assertEquals(4, player.getMap().getCurrentIndex());
     }
 
@@ -52,7 +52,7 @@ public class PlayerTest {
     void testMoveGoodVisibleInventory() {
         player.getInventory().addItem(new Item("name", "desc"));
         player.move(Direction.WEST);
-        assertTrue(player.hasItemByName(new Item("name", "desc")));
+        assertTrue(player.hasItem(new Item("name", "desc")));
         assertEquals(4, player.getMap().getCurrentIndex());
     }
 

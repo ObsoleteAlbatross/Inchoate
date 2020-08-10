@@ -69,6 +69,11 @@ public class Room implements Serializable {
                 direction == Direction.SOUTH ? south : east;
     }
 
+    // EFFECTS: Return if the given direction leads to a valid (non-empty) room
+    public boolean isValidDirection(Direction direction) {
+        return getDestinationFromDirection(direction) != -1;
+    }
+
     // EFFECTS: Return the room name
     public String getName() {
         return name;

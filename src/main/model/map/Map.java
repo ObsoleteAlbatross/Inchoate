@@ -26,6 +26,17 @@ public class Map implements Serializable  {
     }
 
     // MODIFIES: this
+    // EFFECTS: Try to set current room to the given direction room
+    public void move(Direction direction) {
+        currentIndex = getCurrentRoom().getDestinationFromDirection(direction);
+    }
+
+    // EFFECTS: Return the room in the given direction from the current room
+    public Room getRoomInDirection(Direction direction) {
+        return getRoomByIndex(getCurrentRoom().getDestinationFromDirection(direction));
+    }
+
+    // MODIFIES: this
     // EFFECTS: Add a room to the list of rooms
     public void addRoom(Room room) {
         this.rooms.add(room);

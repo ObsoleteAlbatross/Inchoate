@@ -82,3 +82,13 @@ See the [User Manual](#user-manual) on saving and loading.
     - SaveFileHandler
 - Map interface - this was done more as a bonus since I saw that it is useful for the **Inventory** class holding items,
 instead of using a list.
+
+## Phase 4: Task 3
+- Cohesion and coupling between Player class and map + room class. More of the **move** method implementation should be delegated to either
+the map class, since some of these functionalites should be implemented in either the map or room class.
+This also helps with coupling as it lessens the breakage dependencies in the implementation.
+- Cohesion and coupling between Player class and Inventory class. Specifically, the hasItem methods. See above.
+- Everything in the ui package haha. Coupling is of medium seriousness. It is of semantic coupling since it
+relies on methods and fields returning/being of certain types. For example, when I refactored inventory class
+to use a Map to hold the items instead of a list, it caused breakage before compile time. Simpling going 
+through the error list made the switch very smooth.
