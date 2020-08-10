@@ -74,3 +74,11 @@ It will play a click sound.
 You can also save and load by using the text field. 
 See the [User Manual](#user-manual) on saving and loading.
 
+## Phase 4: Task 2
+- Robust classes
+    - Inventory
+    - Riddle
+    - Player
+    - SaveFileHandler
+- Map interface - this was done more as a bonus since I saw that it is useful for the **Inventory** class holding items,
+instead of using a list.

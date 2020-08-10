@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SaveFileHandlerTest {
     Player originalPlayer;
@@ -87,12 +86,11 @@ public class SaveFileHandlerTest {
         } catch (Exception e) {
             fail();
         }
-        assertEquals(originalPlayer.getInventory().getItems().get(0).getName(),
-                savePlayer.getInventory().getItems().get(0).getName());
+        assertEquals(originalPlayer.getInventory().getItems().size(),
+                savePlayer.getInventory().getItems().size());
+        assertTrue(savePlayer.getInventory().getItems().containsKey(playerItem.getName()));
         assertEquals(originalPlayer.getMap().getCurrentIndex(),
                 savePlayer.getMap().getCurrentIndex());
-        assertEquals(originalPlayer.getMap().getRoomByIndex(0).getInventory().getItems().get(0).getName(),
-                savePlayer.getMap().getRoomByIndex(0).getInventory().getItems().get(0).getName());
         assertEquals(originalPlayer.getMap().getRoomByIndex(0).isVisited(),
                 savePlayer.getMap().getRoomByIndex(0).isVisited());
         assertEquals(originalPlayer.getMap().getRoomByIndex(1).isVisited(),
@@ -111,12 +109,10 @@ public class SaveFileHandlerTest {
         } catch (Exception e) {
             fail();
         }
-        assertEquals(originalPlayer.getInventory().getItems().get(0).getName(),
-                savePlayer.getInventory().getItems().get(0).getName());
+        assertEquals(originalPlayer.getInventory().getItems().size(),
+                savePlayer.getInventory().getItems().size());
         assertEquals(originalPlayer.getMap().getCurrentIndex(),
                 savePlayer.getMap().getCurrentIndex());
-        assertEquals(originalPlayer.getMap().getRoomByIndex(0).getInventory().getItems().get(0).getName(),
-                savePlayer.getMap().getRoomByIndex(0).getInventory().getItems().get(0).getName());
         assertEquals(originalPlayer.getMap().getRoomByIndex(0).isVisited(),
                 savePlayer.getMap().getRoomByIndex(0).isVisited());
         assertEquals(originalPlayer.getMap().getRoomByIndex(1).isVisited(),

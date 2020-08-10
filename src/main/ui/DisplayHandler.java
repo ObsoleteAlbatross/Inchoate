@@ -22,9 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 
 public class DisplayHandler extends JFrame implements DocumentListener, ActionListener {
@@ -264,12 +262,15 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
     // MODIFIES: inchoate, player
     // EFFECTS: Take all items from room
     private void takeAll() {
-        List<Item> items = inchoate.player.getMap().getCurrentRoom().getInventory().getItems();
-        if (items.size() == 0) {
+        Map<String, Item> items = inchoate.player.getMap().getCurrentRoom().getInventory().getItems();
+        if (items.isEmpty()) {
             print("There are no items in this room", Color.BLUE);
         } else {
-            for (int i = items.size() - 1; i >= 0; i--) {
-                inchoate.take(items.get(i).getName());
+            // Iterator source: https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap/1066603#1066603
+            Iterator it = items.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry)it.next();
+                inchoate.take(pair.getValue().toString());
             }
         }
     }
@@ -277,12 +278,15 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
     // MODIFIES: inchoate, player
     // EFFECTS: Drop all items from inventory
     private void dropAll() {
-        List<Item> items = inchoate.player.getInventory().getItems();
-        if (items.size() == 0) {
-            print("There are no items in your inventory", Color.BLUE);
+        Map<String, Item> items = inchoate.player.getMap().getCurrentRoom().getInventory().getItems();
+        if (items.isEmpty()) {
+            print("There are no items in this room", Color.BLUE);
         } else {
-            for (int i = items.size() - 1; i >= 0; i--) {
-                inchoate.drop(items.get(i).getName());
+            // Iterator source: https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap/1066603#1066603
+            Iterator it = items.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry)it.next();
+                inchoate.drop(pair.getValue().toString());
             }
         }
     }

@@ -41,7 +41,7 @@ public class InventoryTest {
         assertEquals(0, inventory.getItems().size());
         inventory.addItem(item1);
         assertEquals(1, inventory.getItems().size());
-        assertTrue(inventory.getItems().contains(item1));
+        assertTrue(inventory.getItems().containsValue(item1));
     }
 
     @Test
@@ -53,8 +53,8 @@ public class InventoryTest {
         items.add(item2);
         inventory.addItem(items);
         assertEquals(2, inventory.getItems().size());
-        assertTrue(inventory.getItems().contains(items.get(0)));
-        assertTrue(inventory.getItems().contains(items.get(1)));
+        assertTrue(inventory.getItems().containsValue(items.get(0)));
+        assertTrue(inventory.getItems().containsValue(items.get(1)));
     }
 
     @Test
@@ -74,10 +74,10 @@ public class InventoryTest {
 
         inventory.removeItem(item1.getName());
         assertEquals(1, inventory.getItems().size());
-        assertFalse(inventory.getItems().contains(item1));
+        assertFalse(inventory.getItems().containsValue(item1));
 
         inventory.removeItem(item2.getName());
         assertEquals(0, inventory.getItems().size());
-        assertFalse(inventory.getItems().contains(item2));
+        assertFalse(inventory.getItems().containsValue(item2));
     }
 }

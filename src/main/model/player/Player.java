@@ -45,12 +45,7 @@ public class Player implements Serializable {
 
     // EFFECTS: Return if a given item is in a given inventory
     private boolean hasItemLoop(Item item, Inventory inventory) {
-        for (Item i : inventory.getItems()) {
-            if (i.getName().equals(item.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return inventory.getItems().containsKey(item.getName());
     }
 
     // EFFECTS: Return the map
