@@ -279,11 +279,9 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
         if (items.isEmpty()) {
             print("There are no items in this room", Color.BLUE);
         } else {
-            // Iterator source: https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap/1066603#1066603
-            Iterator it = items.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
-                inchoate.take(pair.getValue().toString());
+            while (!items.isEmpty()) {
+                String itemName = inchoate.player.getMap().getCurrentRoom().getInventory().getItems().keySet().toArray()[0].toString();
+                inchoate.take(itemName);
             }
         }
     }
@@ -291,15 +289,13 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
     // MODIFIES: inchoate, player
     // EFFECTS: Drop all items from inventory
     private void dropAll() {
-        Map<String, Item> items = inchoate.player.getMap().getCurrentRoom().getInventory().getItems();
+        Map<String, Item> items = inchoate.player.getInventory().getItems();
         if (items.isEmpty()) {
-            print("There are no items in this room", Color.BLUE);
+            print("There are no items in your inventory", Color.BLUE);
         } else {
-            // Iterator source: https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap/1066603#1066603
-            Iterator it = items.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
-                inchoate.drop(pair.getValue().toString());
+            while (!items.isEmpty()) {
+                String itemName = inchoate.player.getInventory().getItems().keySet().toArray()[0].toString();
+                inchoate.drop(itemName);
             }
         }
     }

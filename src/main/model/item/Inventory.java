@@ -58,6 +58,9 @@ public class Inventory implements Serializable {
     // EFFECTS: Override Object.toString to be in a nicer format
     @Override
     public String toString() {
+        if (items.isEmpty()) {
+            return "[]";
+        }
         String str = "";
         for (Item item : items.values()) {
             str = str + item.toString() + ", ";
