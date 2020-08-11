@@ -280,7 +280,8 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
             print("There are no items in this room", Color.BLUE);
         } else {
             while (!items.isEmpty()) {
-                String itemName = inchoate.player.getMap().getCurrentRoom().getInventory().getItems().keySet().toArray()[0].toString();
+                String itemName = inchoate.player.getMap().getCurrentRoom()
+                        .getInventory().getItems().keySet().toArray()[0].toString();
                 inchoate.take(itemName);
             }
         }
