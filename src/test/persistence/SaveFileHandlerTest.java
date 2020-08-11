@@ -26,7 +26,8 @@ public class SaveFileHandlerTest {
 
     @BeforeEach
     void runBefore() {
-        saveFile = "./data/saveTest.save";
+        saveFile = "./data/save" +
+                "Test.save";
         loadFile = "./data/loadTest.save";
 
         originalPlayer = new Player();
