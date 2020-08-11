@@ -80,4 +80,15 @@ public class InventoryTest {
         assertEquals(0, inventory.getItems().size());
         assertFalse(inventory.getItems().containsValue(item2));
     }
+
+    @Test
+    void testToString() {
+        assertEquals("[]", inventory.toString());
+        Item item1 = new Item("item1", "interesting");
+        Item item2 = new Item("item2", "interesting");
+        inventory.addItem(item1);
+        assertEquals("item1 (interesting)", inventory.toString());
+        inventory.addItem(item2);
+        assertEquals("item2 (interesting), item1 (interesting)", inventory.toString());
+    }
 }
