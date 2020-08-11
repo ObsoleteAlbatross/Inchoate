@@ -40,6 +40,7 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
     private JTextPane textPane;
     private List<String> commandWords;
     private Mode mode = Mode.INSERT;
+    public boolean answering = false;
 
     // EFFECTS: Initalize GUI fields
     public DisplayHandler() {
@@ -74,7 +75,15 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
                 }
                 print(command, Color.BLACK);
                 try {
-                    inchoate.processCommand(command.toLowerCase().split(" ", 2));
+                    if (!inchoate.winCondition()) {
+                        // do nothing
+                    } else if (answering) {
+                        answering = false;
+                        inchoate.answerRiddle(command);
+                    } else {
+                        inchoate.processCommand(command.toLowerCase().split(" ", 2));
+                        inchoate.winCondition();
+                    }
                 } catch (Exception exception) {
                     print(exception.toString().split(": ")[1], Color.RED);
                 }
@@ -208,7 +217,7 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
         layout.setVerticalGroup(
                 layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
                                 .addComponent(textField, GroupLayout.DEFAULT_SIZE, 25, 25)
                                 .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
                         .addGap(10)
@@ -247,6 +256,10 @@ public class DisplayHandler extends JFrame implements DocumentListener, ActionLi
             } else if (command.equals("quick load")) {
                 playSound(HITSOUND);
                 inchoate.loadFile("./data/saveFile0.save");
+                for (ActionListener actionListener : textField.getActionListeners()) {
+                    textField.removeActionListener(actionListener);
+                }
+                initActionListener();
             } else if (command.equals("take all")) {
                 playSound(HITSOUND);
                 takeAll();

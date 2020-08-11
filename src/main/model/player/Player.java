@@ -27,14 +27,13 @@ public class Player implements Serializable {
     // MODIFIES: this
     // EFFECTS: Try to move player in given direction, throw exception accordingly if can't
     public void move(Direction direction) throws IllegalArgumentException {
-        int destination = map.getCurrentRoom().getDestinationFromDirection(direction);
         // Check if direction is valid
         if (!map.getCurrentRoom().isValidDirection(direction)) {
             throw new IllegalArgumentException("You can't go there! There's nothing there!");
         }
         if (!hasItem(map.getRoomInDirection(direction).getRequired())) {
             throw new IllegalArgumentException("That area is locked! You require `"
-                    + map.getRoomByIndex(destination).getRequired().getName() + "`");
+                    + map.getRoomInDirection(direction).getRequired().getName() + "`");
         }
         map.move(direction);
     }

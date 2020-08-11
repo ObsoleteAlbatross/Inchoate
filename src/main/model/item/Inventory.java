@@ -47,11 +47,21 @@ public class Inventory implements Serializable {
 
     // EFFECTS: Return if inventory has the given item
     public boolean hasItem(Item item) {
-        return items.containsKey(item.getName());
+        return items.containsKey(item.getName().toLowerCase());
     }
 
     // EFFECTS: Return the list of items in inventory
     public Map<String, Item> getItems() {
         return items;
+    }
+
+    // EFFECTS: Override Object.toString to be in a nicer format
+    @Override
+    public String toString() {
+        String str = "";
+        for (Item item : items.values()) {
+            str = str + item.toString() + ", ";
+        }
+        return str.substring(0, str.length() - 2);
     }
 }

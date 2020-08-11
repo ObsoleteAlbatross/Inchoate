@@ -174,7 +174,7 @@ public class Inchoate {
 
     // MODIFIES: this
     // EFFECTS: quit the game
-    private void quit() throws IllegalArgumentException {
+    public void quit() throws IllegalArgumentException {
         displayHandler.print("Are you sure you want to quit?", Color.BLUE);
         ActionListener actionListener = new ActionListener() {
             @Override
@@ -282,15 +282,13 @@ public class Inchoate {
         if (player.getMap().getCurrentRoom().getRiddle() == null) {
             throw new IllegalArgumentException("There is no riddle in this room");
         }
+        displayHandler.answering = true;
         displayHandler.print(player.getMap().getCurrentRoom().getRiddle().getQuestion(), Color.BLUE);
-        Scanner input = new Scanner(System.in);
-        String answer = input.nextLine().toLowerCase();
-        answerRiddle(answer);
     }
 
     // MODIFIES: Player, Riddle
     // EFFECTS: Answer riddle, if correct, then add the item to player hidden inventory
-    private void answerRiddle(String answer) throws IllegalArgumentException {
+    public void answerRiddle(String answer) throws IllegalArgumentException {
         player.getMap().getCurrentRoom().getRiddle().answerQuestion(answer);
         player.getQuest().addItem(player.getMap().getCurrentRoom().getRiddle().getItem());
         displayHandler.print("That is the correct answer!", Color.BLUE);
@@ -299,7 +297,7 @@ public class Inchoate {
 
     // EFFECTS: print items in player inventory
     private void viewInventory() {
-        displayHandler.print(player.getInventory().getItems().toString(), Color.BLUE);
+        displayHandler.print(player.getInventory().toString(), Color.BLUE);
     }
 
     // MODIFIES: Player
@@ -353,15 +351,29 @@ public class Inchoate {
 
     // EFFECTS: list any items in current room
     private void search() {
-        displayHandler.print(player.getMap().getCurrentRoom().getInventory().getItems().toString(), Color.BLUE);
+        displayHandler.print(player.getMap().getCurrentRoom().getInventory().toString(), Color.BLUE);
     }
 
     // EFFECTS: Check if player has win game, return false if yes, true otherwise
     //          and print some good stuff to let player know its over
-    private boolean winCondition() {
+    public boolean winCondition() {
         if (player.getMap().getCurrentRoom().getName().equals("Noxus")) {
             displayHandler.print("Congratulations you have saved the princess or something", Color.BLUE);
             displayHandler.print("The game is now over lol", Color.BLUE);
+            displayHandler.print("The game is now over lol", Color.BLUE);
+            displayHandler.print("The game is now over lol", Color.BLUE);
+            displayHandler.print("Quitting game...", Color.BLUE);
+            Thread quitThread = new Thread() {
+                public void run() {
+                    try {
+                        Thread.sleep(8000);
+                    } catch (Exception exception) {
+                        // do nothing
+                    }
+                    System.exit(0);
+                }
+            };
+            quitThread.start();
             return false;
         }
         return true;
