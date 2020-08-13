@@ -5,7 +5,6 @@ import model.item.Item;
 import model.map.Direction;
 import model.map.Map;
 
-import javax.management.DescriptorRead;
 import java.io.Serializable;
 import java.util.ArrayList;
 

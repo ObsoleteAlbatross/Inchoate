@@ -8,7 +8,6 @@ import model.map.Room;
 import model.player.Player;
 import persistence.SaveFileHandler;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
