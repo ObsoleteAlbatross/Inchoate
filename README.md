@@ -10,12 +10,6 @@ project will inevitably disappear in the shadows of the giants.
 ## Story
 Ha, you wish! There is no real story. Just go save the princess or something...
 
-## Disclaimer?
-Place names from League of Legends was used because I am not creative. Please don't sue me.
-I also included some items which have references to other franchises. Once again, please don't sue me.
-Hopefully this is temporary, but an actual story board may be created in the design phase, or 
-it may continue down this trajectory of randomness.
-
 ## User Stories
 To reduce redundancy:  
 As a user, I want to be able to...
